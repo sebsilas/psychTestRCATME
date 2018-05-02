@@ -1,1 +1,3 @@
-Allow a special rule for choosing the first item
+- Allow a special rule for choosing the first item (needed for the BAT)
+- In admin mode, report the correct answer for each item
+- Check that the answer column in the item bank is character format
