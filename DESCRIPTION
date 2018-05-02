@@ -1,0 +1,18 @@
+Package: psychTestCAT
+Title: Computerised Adaptive Testing With PsychTest
+Version: 0.0.0.9000
+Authors@R: person("Peter", "Harrison", email = "p.m.c.harrison@qmul.ac.uk", role = c("aut", "cre"))
+Description: Utility functions for constructing computerised adaptive tests (CATs) with the psychTest package.
+Depends: R (>= 3.4.2)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Suggests: testthat,
+    codetools
+Imports: psychTest,
+    shiny,
+    catR,
+    methods,
+    plyr
+RoxygenNote: 6.0.1
+Byte-Compile: yes
