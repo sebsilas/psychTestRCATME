@@ -8,7 +8,7 @@ adapt_test <- function(label,
   c(
     setup(label, stopping_rule, opt),
     psychTest::loop_while(
-      fun = check_stopping_rule(stopping_rule),
+      test = check_stopping_rule(stopping_rule),
       logic = c(
         select_next_item(item_bank, opt),
         administer_next_item(item_bank, show_item),
