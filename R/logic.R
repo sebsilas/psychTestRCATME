@@ -316,17 +316,17 @@ finalise <- function(opt) {
     df <- test_state$results.by_item
     n <- nrow(df)
     final_ability <- df[n, paste0("ability_", opt$final_ability.estimator)]
+    attr(final_ability, "metadata") <- list(results = df, options = opt)
     final_ability_sem <-
       df[n, paste0("ability_", opt$final_ability.estimator, "_sem")]
     psychTest::answer(state) <- list(
       ability = final_ability, ability_sem = final_ability_sem)
     psychTest::save_result(
-      state, label = "ability", value = final_ability,
-      metadata = list(results = df, options = opt))
+      state, label = "ability", value = final_ability)
     psychTest::save_result(
-      state, label = "ability_sem", value = final_ability_sem, metadata = NULL)
+      state, label = "ability_sem", value = final_ability_sem)
     psychTest::save_result(
-      state, label = "num_items", value = n, metadata = NULL)
+      state, label = "num_items", value = n)
     psychTest::set_global("test_state", value = NULL, state = state)
   })
 }
