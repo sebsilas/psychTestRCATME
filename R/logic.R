@@ -25,7 +25,7 @@ adapt_test_options <- function(next_item.criterion = "MFI",
                                final_ability.estimator = "BM",
                                cb_control = NULL,
                                cb_group = NULL,
-                               notify_duration = 20) {
+                               notify_duration = 5) {
   stopifnot(
     is.scalar.character(next_item.criterion),
     is.scalar.character(next_item.estimator),
