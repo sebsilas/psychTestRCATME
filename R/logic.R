@@ -6,7 +6,7 @@ adapt_test <- function(label,
                        opt = adapt_test_options()) {
   check_inputs(label, item_bank, show_item)
   c(
-    setup(label, stopping_rule, opt),
+    setup(label, stopping_rule, opt, item_bank),
     psychTest::loop_while(
       test = check_stopping_rule(stopping_rule),
       logic = c(
@@ -25,7 +25,8 @@ adapt_test_options <- function(next_item.criterion = "MFI",
                                final_ability.estimator = "BM",
                                cb_control = NULL,
                                cb_group = NULL,
-                               notify_duration = 5) {
+                               notify_duration = 5,
+                               constrain_answers = FALSE) {
   stopifnot(
     is.scalar.character(next_item.criterion),
     is.scalar.character(next_item.estimator),
@@ -35,25 +36,16 @@ adapt_test_options <- function(next_item.criterion = "MFI",
     length(next_item.prior_par) == 2L,
     next_item.estimator %in% c("ML", "BM", "EAP", "WL"),
     final_ability.estimator %in% c("ML", "BM", "EAP", "WL"),
-    is.null.or(notify_duration, is.scalar.numeric)
+    is.null.or(notify_duration, is.scalar.numeric),
+    is.scalar.logical(constrain_answers)
   )
-  if (!(is.null(cb_control) && is.null(cb_group))) {
-    cb_test <- catR::test.cbList(cb_control, cb_group)
-    if (!cb_test$test) {
-      stop("problem detected with cb_control/cb_group arguments: ",
-           cb_test$message)
-    }
-  }
-  list(
-    next_item.criterion = next_item.criterion,
-    next_item.estimator = next_item.estimator,
-    next_item.prior_dist = next_item.prior_dist,
-    next_item.prior_par = next_item.prior_par,
-    final_ability.estimator = final_ability.estimator,
-    cb_control = cb_control,
-    cb_group = cb_group,
-    notify_duration = notify_duration
-  )
+  local(if (!(is.null(cb_control) && is.null(cb_group))) {
+      cb_test <- catR::test.cbList(cb_control, cb_group)
+      if (!cb_test$test) {
+        stop("problem detected with cb_control/cb_group arguments: ",
+             cb_test$message)
+      }})
+  as.list(environment())
 }
 
 # returns TRUE if we should stop
@@ -128,11 +120,18 @@ get_current_ability_estimate <- function(test_state,
   res
 }
 
-new_state <- function(num_items_in_test) {
-  stopifnot(is.null.or(num_items_in_test, is.scalar.numeric))
+new_state <- function(num_items_in_test, constrain_answers, item_bank) {
+  stopifnot(is.null.or(num_items_in_test, is.scalar.numeric),
+            is.scalar.logical(constrain_answers),
+            is.null.or(item_bank, is.data.frame))
   x <- list(num_items_in_test = num_items_in_test,
             results.by_item = NULL,
             terminate_test = FALSE)
+  x$correct_answers <- if (constrain_answers) {
+    stopifnot(!is.null(item_bank$answer))
+    possible_answers <- sort(unique(item_bank$answer))
+    print(sample(possible_answers, num_items_in_test, replace = TRUE))
+  }
   class(x) <- "test_state"
   x
 }
@@ -153,11 +152,13 @@ check_inputs <- function(label, item_bank, show_item) {
   }
 }
 
-setup <- function(label, stopping_rule, opt) {
+setup <- function(label, stopping_rule, opt, item_bank) {
   psychTest::code_block(function(state, ...) {
     message("Setting up adaptive test...")
     num_items_in_test <- get_num_items_in_test(stopping_rule)
-    test_state <- new_state(num_items_in_test = num_items_in_test)
+    test_state <- new_state(num_items_in_test = num_items_in_test,
+                            constrain_answers = opt$constrain_answers,
+                            item_bank = item_bank)
     psychTest::set_local(key = "test_state", value = test_state, state = state)
     psychTest::register_next_results_section(state, label)
   })
@@ -177,6 +178,13 @@ select_next_item <- function(item_bank, opt) {
       test_state <- psychTest::get_local("test_state", state)
       ability_estimate <- get_current_ability_estimate(
         test_state, opt = opt, estimator = opt$next_item.estimator)
+      allowed_items <- if (!is.null(test_state$correct_answers)) {
+        item_num <- get_num_items_administered(test_state) + 1L
+        correct_answer <- test_state$correct_answers[item_num]
+        as.numeric(item_bank$answer == correct_answer)
+      }
+      stopifnot(is.null(allowed_items) ||
+                  length(allowed_items) == nrow(item_bank))
       next_item <- tryCatch(catR::nextItem(
         itemBank = item_bank[, c("discrimination", "difficulty",
                                  "guessing", "inattention")],
@@ -185,6 +193,7 @@ select_next_item <- function(item_bank, opt) {
         x = test_state$results.by_item[, "score"],
         criterion = opt$next_item.criterion,
         method = opt$next_item.estimator,
+        nAvailable = allowed_items,
         maxItems = Inf,
         cbControl = opt$cb_control,
         cbGroup = opt$cb_group
