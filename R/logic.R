@@ -130,7 +130,7 @@ new_state <- function(num_items_in_test, constrain_answers, item_bank) {
   x$correct_answers <- if (constrain_answers) {
     stopifnot(!is.null(item_bank$answer))
     possible_answers <- sort(unique(item_bank$answer))
-    print(sample(possible_answers, num_items_in_test, replace = TRUE))
+    sample(possible_answers, num_items_in_test, replace = TRUE)
   }
   class(x) <- "test_state"
   x
