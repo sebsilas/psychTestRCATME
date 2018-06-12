@@ -228,7 +228,7 @@ administer_next_item <- function(item_bank, show_item) {
       item <- new_item(df = item_bank[item_id, ],
                        item_number = get_num_items_administered(test_state) + 1L,
                        num_items_in_test = get_num_items_in_test(test_state))
-      show_item(item)
+      show_item(item, state, ...)
     }
   )
 }
