@@ -1,4 +1,4 @@
 library(testthat)
-library(psychTestCAT)
+library(psychTestRCAT)
 
-test_check("psychTestCAT")
+test_check("psychTestRCAT")

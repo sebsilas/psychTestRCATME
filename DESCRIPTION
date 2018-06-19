@@ -1,4 +1,4 @@
-Package: psychTestCAT
+Package: psychTestRCAT
 Title: Computerised Adaptive Testing With PsychTestR
 Version: 0.0.0.9000
 Authors@R: person("Peter", "Harrison", email = "p.m.c.harrison@qmul.ac.uk", role = c("aut", "cre"))
