@@ -7,7 +7,7 @@ adapt_test <- function(label,
   check_inputs(label, item_bank, show_item)
   c(
     setup(label, stopping_rule, opt, item_bank),
-    psychTest::loop_while(
+    psychTestR::loop_while(
       test = check_stopping_rule(stopping_rule),
       logic = c(
         select_next_item(item_bank, opt),
@@ -153,29 +153,29 @@ check_inputs <- function(label, item_bank, show_item) {
 }
 
 setup <- function(label, stopping_rule, opt, item_bank) {
-  psychTest::code_block(function(state, ...) {
+  psychTestR::code_block(function(state, ...) {
     message("Setting up adaptive test...")
     num_items_in_test <- get_num_items_in_test(stopping_rule)
     test_state <- new_state(num_items_in_test = num_items_in_test,
                             constrain_answers = opt$constrain_answers,
                             item_bank = item_bank)
-    psychTest::set_local(key = "test_state", value = test_state, state = state)
-    psychTest::register_next_results_section(state, label)
+    psychTestR::set_local(key = "test_state", value = test_state, state = state)
+    psychTestR::register_next_results_section(state, label)
   })
 }
 
 # Returns true if we should stop
 check_stopping_rule <- function(stopping_rule) {
   function(state, ...) {
-    test_state <- psychTest::get_local(key = "test_state", state = state)
+    test_state <- psychTestR::get_local(key = "test_state", state = state)
     stopping_rule(test_state) || test_state$terminate_test
   }
 }
 
 select_next_item <- function(item_bank, opt) {
-  psychTest::code_block(
+  psychTestR::code_block(
     function(state, ...) {
-      test_state <- psychTest::get_local("test_state", state)
+      test_state <- psychTestR::get_local("test_state", state)
       ability_estimate <- get_current_ability_estimate(
         test_state, opt = opt, estimator = opt$next_item.estimator)
       allowed_items <- if (!is.null(test_state$correct_answers)) {
@@ -206,22 +206,22 @@ select_next_item <- function(item_bank, opt) {
           "Failed to select new item, terminating adaptive procedure.",
           duration = opt$notify_duration)
         test_state$terminate_test <- TRUE
-        psychTest::skip_n_pages(state, n = 2L) # this is dangerous
-      } else if (psychTest::demo(state)) {
+        psychTestR::skip_n_pages(state, n = 2L) # this is dangerous
+      } else if (psychTestR::demo(state)) {
         msg <- shiny::p("Difficulty: ",
                         shiny::strong(format(next_item$par[2],
                                              digits = 3,
                                              nsmall = 3)))
         shiny::showNotification(msg, duration = opt$notify_duration)
       }
-      psychTest::set_local(key = "test_state", value = test_state, state = state)
+      psychTestR::set_local(key = "test_state", value = test_state, state = state)
     })
 }
 
 administer_next_item <- function(item_bank, show_item) {
-  psychTest::reactive_page(
+  psychTestR::reactive_page(
     function(state, ...) {
-      test_state <- psychTest::get_local("test_state", state)
+      test_state <- psychTestR::get_local("test_state", state)
       item_id <- test_state$next_item$item
       stopifnot(is.scalar.numeric(item_id),
                 item_id > 0, item_id <= nrow(item_bank))
@@ -244,16 +244,16 @@ new_item <- function(df, item_number, num_items_in_test) {
 }
 
 save_result <- function(item_bank, opt) {
-  psychTest::code_block(
+  psychTestR::code_block(
     function(state, ...) {
-      test_state <- psychTest::get_local("test_state", state)
+      test_state <- psychTestR::get_local("test_state", state)
 
       previous_ability_estimate <- get_current_ability_estimate(
         test_state = test_state, opt = opt)
 
       item_info <- test_state$next_item
       item_id <- item_info$item
-      answer <- psychTest::answer(state)
+      answer <- psychTestR::answer(state)
       correct_answer <- item_bank[item_id, "answer"]
       score <- answer == correct_answer
 
@@ -295,7 +295,7 @@ save_result <- function(item_bank, opt) {
                                              "_sem")] <- tmp_ability_sem
       }
 
-      if (psychTest::demo(state)) {
+      if (psychTestR::demo(state)) {
         new_ability_estimate <- get_current_ability_estimate(test_state, opt)
         ability_change <- new_ability_estimate - previous_ability_estimate
         msg <- shiny::div(
@@ -313,28 +313,28 @@ save_result <- function(item_bank, opt) {
         shiny::showNotification(msg, duration = opt$notify_duration,
                                 type = if (score) "message" else "error")
       }
-      psychTest::set_local(key = "test_state", value = test_state, state = state)
+      psychTestR::set_local(key = "test_state", value = test_state, state = state)
     }
   )
 }
 
 finalise <- function(opt) {
-  psychTest::code_block(function(state, ...) {
-    test_state <- psychTest::get_local("test_state", state)
+  psychTestR::code_block(function(state, ...) {
+    test_state <- psychTestR::get_local("test_state", state)
     df <- test_state$results.by_item
     n <- nrow(df)
     final_ability <- df[n, paste0("ability_", opt$final_ability.estimator)]
     attr(final_ability, "metadata") <- list(results = df, options = opt)
     final_ability_sem <-
       df[n, paste0("ability_", opt$final_ability.estimator, "_sem")]
-    psychTest::answer(state) <- list(
+    psychTestR::answer(state) <- list(
       ability = final_ability, ability_sem = final_ability_sem)
-    psychTest::save_result(
+    psychTestR::save_result(
       state, label = "ability", value = final_ability)
-    psychTest::save_result(
+    psychTestR::save_result(
       state, label = "ability_sem", value = final_ability_sem)
-    psychTest::save_result(
+    psychTestR::save_result(
       state, label = "num_items", value = n)
-    psychTest::set_local("test_state", value = NULL, state = state)
+    psychTestR::set_local("test_state", value = NULL, state = state)
   })
 }

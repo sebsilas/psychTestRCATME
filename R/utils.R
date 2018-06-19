@@ -29,7 +29,7 @@ is.null.or <- function(x, f) {
 #' @export
 assert_global_is_null <- function(key, state) {
   stopifnot(is.scalar.character(key), is(state, "state"))
-  if (is.null(psychTest::get_global(key, state))) TRUE else {
+  if (is.null(psychTestR::get_global(key, state))) TRUE else {
     stop("global variable <", key, "> in <state> was not NULL")
   }
 }
