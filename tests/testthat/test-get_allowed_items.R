@@ -1,11 +1,13 @@
-context("get_allowed_items")
-
 library(magrittr)
 library(testthat)
 
+
+context("get_allowed_items")
+
+
 test_that("example 1", {
   opt <- psychTestRCAT::adapt_test_options(constrain_answers = TRUE,
-                                           avoid_duplicates = "audio", )
+                                           avoid_duplicates = "audio")
 
   item_bank <- data.frame(
     audio = rep(letters, each = 2),
@@ -180,3 +182,30 @@ test_that("example 5 - just avoid duplicates", {
   }
 })
 
+test_that("example 6 - constraining first item", {
+  opt <- psychTestRCAT::adapt_test_options(constrain_answers = TRUE,
+                                           eligible_first_items = c(1, 2))
+  item_bank <- data.frame(
+    audio = rep(letters, each = 2),
+    discrimination = 1,
+    difficulty = rnorm(26 * 2),
+    guessing = 0,
+    inattention = 1,
+    answer = rep(c(1, 2), times = 26),
+    stringsAsFactors = FALSE
+  )
+  test_state <- psychTestRCAT:::new_state(num_items_in_test = 26L,
+                                          constrain_answers = TRUE,
+                                          item_bank = item_bank)
+  for (i in seq_len(26)) {
+    allowed_items <- psychTestRCAT:::get_allowed_items(
+      test_state = test_state, item_bank = item_bank, opt = opt) %>%
+      which
+    expect_equal(allowed_items,
+                 which(item_bank$answer == test_state$correct_answers[i]) %>%
+                   (function(x) if (i == 1L) intersect(x, c(1, 2)) else x))
+    chosen <- allowed_items %>% (function(x) x[sample(length(x), size = 1)])
+    test_state$results.by_item <- rbind(test_state$results.by_item,
+                                        data.frame(item_id = chosen))
+  }
+})

@@ -17,6 +17,7 @@ adapt_test <- function(label,
     finalise(opt))
 }
 
+#' @param eligible_first_items NULL or numeric vector listing eligible items for the first item in the test (e.g. c(2, 3, 4) means that the first item will be drawn from rows 2, 3, 4 of the item bank)
 #' @export
 adapt_test_options <- function(next_item.criterion = "MFI",
                                next_item.estimator = "BM",
@@ -27,6 +28,7 @@ adapt_test_options <- function(next_item.criterion = "MFI",
                                avoid_duplicates = NULL,
                                cb_control = NULL,
                                cb_group = NULL,
+                               eligible_first_items = NULL,
                                notify_duration = 5
 ) {
   stopifnot(
@@ -39,7 +41,8 @@ adapt_test_options <- function(next_item.criterion = "MFI",
     next_item.estimator %in% c("ML", "BM", "EAP", "WL"),
     final_ability.estimator %in% c("ML", "BM", "EAP", "WL"),
     is.null.or(avoid_duplicates, is.character),
-    is.null.or(avoid_duplicates, is.character),
+    is.null.or(eligible_first_items,
+               function(x) is.numeric(x) && !anyDuplicated(x)),
     is.null.or(notify_duration, is.scalar.numeric),
     is.scalar.logical(constrain_answers)
   )
@@ -166,6 +169,10 @@ check_inputs <- function(label, item_bank, show_item, opt) {
       stop("all elements of avoid_duplicates must correspond to ",
            "columns of the item bank")
   }
+  if (!is.null(opt$eligible_first_items)) {
+    if (!all(opt$eligible_first_items %in% seq_len(nrow(item_bank))))
+      stop("eligible_first_items must be integers indexing rows of item_bank")
+  }
 }
 
 setup <- function(label, stopping_rule, opt, item_bank) {
@@ -194,9 +201,11 @@ check_stopping_rule <- function(stopping_rule) {
 get_allowed_items <- function(test_state, item_bank, opt) {
   cond1 <- is_answer_valid(test_state, item_bank)
   cond2 <- are_duplicates_avoided(test_state, item_bank, opt)
-  stopifnot(is.logical(cond1), is.logical(cond2), length(cond1) == length(cond2),
-            length(cond1) == nrow(item_bank))
-  res <- cond1 & cond2
+  cond3 <- check_eligible_first_items(test_state, item_bank, opt)
+  for (x in list(cond1, cond2, cond3)) {
+    stopifnot(is.logical(x), length(x) == nrow(item_bank))
+  }
+  res <- cond1 & cond2 & cond3
   stopifnot(is.null(res) || length(res) == nrow(item_bank))
   if (!any(res)) {
     res <- rep(TRUE, times = nrow(item_bank))
@@ -204,6 +213,17 @@ get_allowed_items <- function(test_state, item_bank, opt) {
             "so disabling content balancing")
   }
   res
+}
+
+check_eligible_first_items <- function(test_state, item_bank, opt) {
+  item_num <- get_num_items_administered(test_state) + 1L
+  if (is.null(opt$eligible_first_items) || (item_num != 1)) {
+    rep(TRUE, times = nrow(item_bank))
+  } else {
+    res <- rep(FALSE, times = nrow(item_bank))
+    res[opt$eligible_first_items] <- TRUE
+    res
+  }
 }
 
 is_answer_valid <- function(test_state, item_bank) {
