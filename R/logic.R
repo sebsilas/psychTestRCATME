@@ -4,7 +4,7 @@ adapt_test <- function(label,
                        show_item,
                        stopping_rule = stopping_rule.num_items(n = NULL),
                        opt = adapt_test_options()) {
-  check_inputs(label, item_bank, show_item)
+  check_inputs(label, item_bank, show_item, opt)
   c(
     setup(label, stopping_rule, opt, item_bank),
     psychTestR::loop_while(
@@ -23,10 +23,12 @@ adapt_test_options <- function(next_item.criterion = "MFI",
                                next_item.prior_dist = "norm",
                                next_item.prior_par = c(0, 1),
                                final_ability.estimator = "BM",
+                               constrain_answers = FALSE,
+                               avoid_duplicates = NULL,
                                cb_control = NULL,
                                cb_group = NULL,
-                               notify_duration = 5,
-                               constrain_answers = FALSE) {
+                               notify_duration = 5
+) {
   stopifnot(
     is.scalar.character(next_item.criterion),
     is.scalar.character(next_item.estimator),
@@ -36,6 +38,8 @@ adapt_test_options <- function(next_item.criterion = "MFI",
     length(next_item.prior_par) == 2L,
     next_item.estimator %in% c("ML", "BM", "EAP", "WL"),
     final_ability.estimator %in% c("ML", "BM", "EAP", "WL"),
+    is.null.or(avoid_duplicates, is.character),
+    is.null.or(avoid_duplicates, is.character),
     is.null.or(notify_duration, is.scalar.numeric),
     is.scalar.logical(constrain_answers)
   )
@@ -69,6 +73,11 @@ stopping_rule.num_items <- function(n) {
 get_num_items_administered <- function(test_state) {
   df <- test_state$results.by_item
   if (is.null(df)) 0L else nrow(df)
+}
+
+get_items_administered <- function(test_state) {
+  df <- test_state$results.by_item
+  if (is.null(df)) integer() else as.integer(df$item_id)
 }
 
 #' @export
@@ -136,7 +145,7 @@ new_state <- function(num_items_in_test, constrain_answers, item_bank) {
   x
 }
 
-check_inputs <- function(label, item_bank, show_item) {
+check_inputs <- function(label, item_bank, show_item, opt) {
   stopifnot(
     is.scalar.character(label),
     is.data.frame(item_bank),
@@ -149,6 +158,13 @@ check_inputs <- function(label, item_bank, show_item) {
     if (!is.numeric(item_bank[[col]])) {
       stop(col, " must be numeric")
     }
+    if (anyNA(item_bank[[col]]))
+      stop("NA values not permitted in column ", col)
+  }
+  if (!is.null(opt$avoid_duplicates)) {
+    if (!all(opt$avoid_duplicates %in% names(item_bank)))
+      stop("all elements of avoid_duplicates must correspond to ",
+           "columns of the item bank")
   }
 }
 
@@ -172,19 +188,55 @@ check_stopping_rule <- function(stopping_rule) {
   }
 }
 
+#' The item must match correct_answers (if specified),
+#' and it must avoid duplicates in opt$avoid_duplicates.
+#' If this is not possible, the item is chosen randomly, with a warning.
+get_allowed_items <- function(test_state, item_bank, opt) {
+  cond1 <- is_answer_valid(test_state, item_bank)
+  cond2 <- are_duplicates_avoided(test_state, item_bank, opt)
+  stopifnot(is.logical(cond1), is.logical(cond2), length(cond1) == length(cond2),
+            length(cond1) == nrow(item_bank))
+  res <- cond1 & cond2
+  stopifnot(is.null(res) || length(res) == nrow(item_bank))
+  if (!any(res)) {
+    res <- rep(TRUE, times = nrow(item_bank))
+    warning("couldn't satisfy all constraints on item selection, ",
+            "so disabling content balancing")
+  }
+  res
+}
+
+is_answer_valid <- function(test_state, item_bank) {
+  if (is.null(test_state$correct_answers)) {
+    rep(TRUE, times = nrow(item_bank))
+  } else {
+    item_num <- get_num_items_administered(test_state) + 1L
+    correct_answer <- test_state$correct_answers[item_num]
+    item_bank$answer == correct_answer
+  }
+}
+
+are_duplicates_avoided <- function(test_state, item_bank, opt) {
+  if (is.null(opt$avoid_duplicates)) {
+    rep(TRUE, times = nrow(item_bank))
+  } else {
+    cols <- opt$avoid_duplicates
+    items_administered <- get_items_administered(test_state)
+    res <- rep(TRUE, times = nrow(item_bank))
+    for (col in cols) {
+      res[item_bank[[col]] %in% item_bank[items_administered, col]] <- FALSE
+    }
+    res
+  }
+}
+
 select_next_item <- function(item_bank, opt) {
   psychTestR::code_block(
     function(state, ...) {
       test_state <- psychTestR::get_local("test_state", state)
       ability_estimate <- get_current_ability_estimate(
         test_state, opt = opt, estimator = opt$next_item.estimator)
-      allowed_items <- if (!is.null(test_state$correct_answers)) {
-        item_num <- get_num_items_administered(test_state) + 1L
-        correct_answer <- test_state$correct_answers[item_num]
-        as.numeric(item_bank$answer == correct_answer)
-      }
-      stopifnot(is.null(allowed_items) ||
-                  length(allowed_items) == nrow(item_bank))
+      allowed_items <- get_allowed_items(test_state, item_bank, opt)
       next_item <- tryCatch(catR::nextItem(
         itemBank = item_bank[, c("discrimination", "difficulty",
                                  "guessing", "inattention")],
@@ -193,11 +245,12 @@ select_next_item <- function(item_bank, opt) {
         x = test_state$results.by_item[, "score"],
         criterion = opt$next_item.criterion,
         method = opt$next_item.estimator,
-        nAvailable = allowed_items,
+        nAvailable = as.numeric(allowed_items),
         maxItems = Inf,
         cbControl = opt$cb_control,
         cbGroup = opt$cb_group
       ), error = function(e) NULL)
+
       test_state$next_item <- next_item
       if (is.null(next_item) ||
           is.null(next_item$item) ||
