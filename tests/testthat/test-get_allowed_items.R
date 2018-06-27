@@ -1,9 +1,7 @@
 library(magrittr)
 library(testthat)
 
-
 context("get_allowed_items")
-
 
 test_that("example 1", {
   opt <- psychTestRCAT::adapt_test_options(constrain_answers = TRUE,
