@@ -9,7 +9,7 @@ Encoding: UTF-8
 LazyData: true
 Suggests: testthat,
     codetools
-Imports: psychTestR,
+Imports: psychTestR (>= 2.0.0),
     shiny,
     catR,
     methods,

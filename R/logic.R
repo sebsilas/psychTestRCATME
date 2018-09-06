@@ -187,11 +187,11 @@ setup <- function(label, stopping_rule, opt, item_bank) {
   })
 }
 
-# Returns true if we should stop
+# Returns TRUE if we should keep going
 check_stopping_rule <- function(stopping_rule) {
   function(state, ...) {
     test_state <- psychTestR::get_local(key = "test_state", state = state)
-    stopping_rule(test_state) || test_state$terminate_test
+    !(stopping_rule(test_state) || test_state$terminate_test)
   }
 }
 
