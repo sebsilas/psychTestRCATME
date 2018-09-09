@@ -33,3 +33,11 @@ assert_global_is_null <- function(key, state) {
     stop("global variable <", key, "> in <state> was not NULL")
   }
 }
+
+is.integerlike <- function(x) {
+  all(round(x) == x)
+}
+
+is.scalar.integerlike <- function(x) {
+  is.scalar(x) && is.integerlike(x)
+}
