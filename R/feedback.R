@@ -71,17 +71,19 @@ cat.feedback.graph.display_scores <- function(text_score, x_axis, y_axis, text_r
 cat.feedback.graph.plot_cat_results <- function(res, x_axis, y_axis) {
   if (!is.list(res)) stop("<cat_results> was malformed, looking like this: ",
                           utils::capture.output(print(res)))
-  num_bins <- ceiling(log2(res$num_scores)) + 1
+  # num_bins <- pmax(16, ceiling(log2(res$num_scores)) + 1)
+  num_bins <- 16
   stopifnot(is.scalar.character(x_axis),
             is.scalar.character(y_axis),
             is.list(res),
             is.numeric(res$all_scores))
   plotly::ggplotly(ggplot2::ggplot(
     data.frame(Score = res$all_scores), ggplot2::aes(x = Score)
-  ) + ggplot2::geom_histogram(bins = num_bins, colour = "#004d66",
+  ) + ggplot2::geom_histogram(bins = num_bins,
+                              colour = "#004d66",
                               fill = "#00ace6") +
     ggplot2::geom_vline(xintercept = res$score, colour = "#e60000") +
-    ggplot2::scale_x_continuous(x_axis) +
+    ggplot2::scale_x_continuous(x_axis, limits = c(-4, 4)) +
     ggplot2::scale_y_continuous(y_axis) +
     ggplot2::theme_bw() +
     ggplot2::theme(panel.grid = ggplot2::element_blank()),
