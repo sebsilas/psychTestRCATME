@@ -15,6 +15,7 @@ Imports: psychTestR (>= 2.0.0),
     methods,
     plyr,
     plotly,
+    ggplot2,
     magrittr
 RoxygenNote: 6.1.0
 Byte-Compile: yes
