@@ -68,7 +68,9 @@ new_stopping_rule <- function(f, num_items_in_test = NULL) {
 stopping_rule.num_items <- function(n) {
   if (is.null(n)) stop("number of items cannot be NULL")
   stopifnot(is.scalar.numeric(n), n > 0)
-  f <- function(test_state) get_num_items_administered(test_state) == n
+  f <- function(test_state) {
+    get_num_items_administered(test_state) >= n
+  }
   new_stopping_rule(f, num_items_in_test = n)
 }
 
