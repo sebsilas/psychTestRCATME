@@ -7,6 +7,8 @@ cat.feedback.graph <- function(test_label,
                                next_button = NULL,
                                digits = 3L) {
   stopifnot(is.scalar.character(test_label))
+  eval(names(plotly::wind)) # We do this to force advance load of plotly
+  eval(names(ggplot2::economics)) # Same for ggplot2
   c(
     cat.feedback.graph.manage_scores(test_label = test_label),
     cat.feedback.graph.display_scores(text_score = text_score,
