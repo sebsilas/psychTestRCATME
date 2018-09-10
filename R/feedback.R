@@ -58,8 +58,9 @@ cat.feedback.graph.display_scores <- function(text_score, x_axis, y_axis, text_r
       ui = shiny::div(
         shiny::p(text_score, shiny::strong(round(res$score, digits = digits))),
         shiny::p(text_rank, shiny::strong(sprintf("%i/%i", res$rank, res$num_scores))),
-        shiny::div(cat.feedback.graph.plot_cat_results(res, x_axis = x_axis, y_axis = y_axis),
-                 style = "border-style: solid; border-width: 1px; background-color: white; width: 310px;"),
+        if (res$num_scores > 1L)
+          shiny::div(cat.feedback.graph.plot_cat_results(res, x_axis = x_axis, y_axis = y_axis),
+                     style = "border-style: solid; border-width: 1px; background-color: white; width: 310px;"),
         if (!is.null(next_button))
           shiny::p(psychTestR::trigger_button("next", next_button))
       )
