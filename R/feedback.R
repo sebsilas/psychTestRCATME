@@ -76,8 +76,7 @@ cat.feedback.graph.display_scores <- function(text_finish, text_score, text_rank
 cat.feedback.graph.plot_cat_results <- function(res, x_axis, y_axis) {
   if (!is.list(res)) stop("<cat_results> was malformed, looking like this: ",
                           utils::capture.output(print(res)))
-  # num_bins <- pmax(16, ceiling(log2(res$num_scores)) + 1)
-  num_bins <- 16
+  num_bins <- pmax(16, ceiling(log2(res$num_scores)) + 1)
   stopifnot(is.scalar.character(x_axis),
             is.scalar.character(y_axis),
             is.list(res),
