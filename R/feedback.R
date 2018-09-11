@@ -87,10 +87,10 @@ cat.feedback.graph.plot_cat_results <- function(res, x_axis, y_axis) {
                               colour = "#004d66",
                               fill = "#00ace6") +
     ggplot2::geom_vline(xintercept = res$score, colour = "#e60000") +
-    ggplot2::scale_x_continuous(x_axis, limits = c(-4, 4)) +
+    ggplot2::scale_x_continuous(x_axis) +
     ggplot2::scale_y_continuous(y_axis) +
     ggplot2::theme_bw() +
-    ggplot2::theme(panel.grid = ggplot2::element_blank()),
+    ggplot2::theme(panel.grid = ggplot2::element_blank()))
                    # panel.background = ggplot2::element_rect(fill = "#f7f7f7"))
-  width = 300, height = 300)
+  # width = 300, height = 300)
 }
