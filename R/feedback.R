@@ -1,6 +1,7 @@
 # next_button: text or shiny.tag or NULL
 #' @export
 cat.feedback.graph <- function(test_label,
+                               text_finish = "You finished the test!",
                                text_score = "Your final score:",
                                text_rank = "Your rank compared to previous participants:",
                                x_axis = "Score", y_axis = "Count",
@@ -11,9 +12,10 @@ cat.feedback.graph <- function(test_label,
   eval(names(ggplot2::economics)) # Same for ggplot2
   c(
     cat.feedback.graph.manage_scores(test_label = test_label),
-    cat.feedback.graph.display_scores(text_score = text_score,
-                                      x_axis = x_axis, y_axis = y_axis,
+    cat.feedback.graph.display_scores(text_finish = text_finish,
+                                      text_score = text_score,
                                       text_rank = text_rank,
+                                      x_axis = x_axis, y_axis = y_axis,
                                       next_button = next_button,
                                       digits = digits)
   )
@@ -43,10 +45,12 @@ cat.feedback.graph.get_rank <- function(all_scores) {
   num_scores + 1L - rank(all_scores, ties.method = "max")[num_scores]
 }
 
-cat.feedback.graph.display_scores <- function(text_score, x_axis, y_axis, text_rank,
+cat.feedback.graph.display_scores <- function(text_finish, text_score, text_rank,
+                                              x_axis, y_axis,
                                               next_button, digits) {
   stopifnot(is.scalar.character(x_axis),
             is.scalar.character(y_axis),
+            is.scalar.character(text_finish) || is(text_finish, "shiny.tag"),
             is.scalar.character(text_score) || is(text_score, "shiny.tag"),
             is.scalar.character(text_rank) || is(text_rank, "shiny.tag"),
             is.null(next_button) || is.scalar.character(next_button) ||
@@ -56,6 +60,7 @@ cat.feedback.graph.display_scores <- function(text_score, x_axis, y_axis, text_r
     res <- psychTestR::get_local(key = "cat_results", state = state)
     psychTestR::page(
       ui = shiny::div(
+        shiny::p(text_finish),
         shiny::p(text_score, shiny::strong(round(res$score, digits = digits))),
         shiny::p(text_rank, shiny::strong(sprintf("%i/%i", res$rank, res$num_scores))),
         if (res$num_scores > 1L)
