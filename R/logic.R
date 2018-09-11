@@ -179,7 +179,6 @@ check_inputs <- function(label, item_bank, show_item, opt) {
 
 setup <- function(label, stopping_rule, opt, item_bank) {
   psychTestR::code_block(function(state, ...) {
-    message("Setting up adaptive test...")
     num_items_in_test <- get_num_items_in_test(stopping_rule)
     test_state <- new_state(num_items_in_test = num_items_in_test,
                             constrain_answers = opt$constrain_answers,
