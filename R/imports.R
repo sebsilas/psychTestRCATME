@@ -3,3 +3,6 @@ NULL
 
 #' @importFrom magrittr "%>%"
 NULL
+
+#' @importFrom utils "read.table"
+NULL

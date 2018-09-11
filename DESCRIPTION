@@ -18,6 +18,7 @@ Imports:
     plyr (>= 1.8.4),
     plotly (>= 4.7.1),
     ggplot2 (>= 3.0.0),
-    magrittr (>= 1.5)
+    magrittr (>= 1.5),
+    utils
 RoxygenNote: 6.1.0
 Byte-Compile: yes
