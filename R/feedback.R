@@ -65,7 +65,7 @@ cat.feedback.graph.display_scores <- function(text_finish, text_score, text_rank
         shiny::p(text_rank, shiny::strong(sprintf("%i/%i", res$rank, res$num_scores))),
         if (res$num_scores > 1L)
           shiny::div(cat.feedback.graph.plot_cat_results(res, x_axis = x_axis, y_axis = y_axis),
-                     style = "border-style: solid; border-width: 1px; background-color: white; width: 310px;"),
+                     style = "border-style: solid; border-width: 1px; background-color: white;"),
         if (!is.null(next_button))
           shiny::p(psychTestR::trigger_button("next", next_button))
       )
@@ -90,7 +90,8 @@ cat.feedback.graph.plot_cat_results <- function(res, x_axis, y_axis) {
     ggplot2::scale_x_continuous(x_axis) +
     ggplot2::scale_y_continuous(y_axis) +
     ggplot2::theme_bw() +
-    ggplot2::theme(panel.grid = ggplot2::element_blank()))
+    ggplot2::theme(panel.grid = ggplot2::element_blank()),
+  height = 300)
                    # panel.background = ggplot2::element_rect(fill = "#f7f7f7"))
   # width = 300, height = 300)
 }
