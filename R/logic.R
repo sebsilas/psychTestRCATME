@@ -68,7 +68,9 @@ new_stopping_rule <- function(f, num_items_in_test = NULL) {
 stopping_rule.num_items <- function(n) {
   if (is.null(n)) stop("number of items cannot be NULL")
   stopifnot(is.scalar.numeric(n), n > 0)
-  f <- function(test_state) get_num_items_administered(test_state) == n
+  f <- function(test_state) {
+    get_num_items_administered(test_state) >= n
+  }
   new_stopping_rule(f, num_items_in_test = n)
 }
 
@@ -177,7 +179,6 @@ check_inputs <- function(label, item_bank, show_item, opt) {
 
 setup <- function(label, stopping_rule, opt, item_bank) {
   psychTestR::code_block(function(state, ...) {
-    message("Setting up adaptive test...")
     num_items_in_test <- get_num_items_in_test(stopping_rule)
     test_state <- new_state(num_items_in_test = num_items_in_test,
                             constrain_answers = opt$constrain_answers,
@@ -187,11 +188,11 @@ setup <- function(label, stopping_rule, opt, item_bank) {
   })
 }
 
-# Returns true if we should stop
+# Returns TRUE if we should keep going
 check_stopping_rule <- function(stopping_rule) {
   function(state, ...) {
     test_state <- psychTestR::get_local(key = "test_state", state = state)
-    stopping_rule(test_state) || test_state$terminate_test
+    !(stopping_rule(test_state) || test_state$terminate_test)
   }
 }
 
