@@ -43,7 +43,7 @@ compile_trial_by_trial_results <- function(in_dir = "output/results", label,
       }
     }
   }
-  if (combine) res <- do.call(rbind, res)
+  if (combine) res <- do.call(plyr::rbind.fill, res)
   message(sprintf(paste0("processed %i RDS files, %i of which were psychTestR results files, ",
                          "%i of which contained %s results"),
                   n$rds, n$results, n$test, label))
