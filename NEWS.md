@@ -1,3 +1,5 @@
+# psychTestRCAT 1.2.0
+
 * `show_item` can now be a list of test elements rather than a function
 for a single reactive page
 
