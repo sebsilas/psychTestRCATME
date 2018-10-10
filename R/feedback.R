@@ -82,7 +82,7 @@ cat.feedback.graph.plot_cat_results <- function(res, x_axis, y_axis) {
             is.list(res),
             is.numeric(res$all_scores))
   plotly::ggplotly(ggplot2::ggplot(
-    data.frame(Score = res$all_scores), ggplot2::aes(x = Score)
+    data.frame(Score = res$all_scores), ggplot2::aes_string(x = "Score")
   ) + ggplot2::geom_histogram(bins = num_bins,
                               colour = "#004d66",
                               fill = "#00ace6") +
