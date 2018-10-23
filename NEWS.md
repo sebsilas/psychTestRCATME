@@ -1,3 +1,5 @@
+* Fixed errors when `item_bank` took the form of a tibble.
+
 # psychTestRCAT 1.2.0
 
 * `show_item` can now be a list of test elements rather than a function

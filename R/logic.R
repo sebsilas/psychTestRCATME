@@ -4,6 +4,7 @@ adapt_test <- function(label,
                        show_item,
                        stopping_rule = stopping_rule.num_items(n = NULL),
                        opt = adapt_test_options()) {
+  item_bank <- as.data.frame(item_bank)
   check_inputs(label, item_bank, show_item, opt)
   c(
     setup(label, stopping_rule, opt, item_bank),
@@ -259,8 +260,8 @@ select_next_item <- function(item_bank, opt) {
         test_state, opt = opt, estimator = opt$next_item.estimator)
       allowed_items <- get_allowed_items(test_state, item_bank, opt)
       next_item <- tryCatch(catR::nextItem(
-        itemBank = item_bank[, c("discrimination", "difficulty",
-                                 "guessing", "inattention")],
+        itemBank = as.matrix(item_bank[, c("discrimination", "difficulty",
+                                           "guessing", "inattention")]),
         theta = ability_estimate,
         out = test_state$results.by_item[, "item_id"],
         x = test_state$results.by_item[, "score"],
