@@ -1,3 +1,9 @@
+#' @param item_bank Object of class \code{data.frame}
+#' (or coerceable to \code{data.frame})
+#' defining the item bank.
+#' Mandatory columns are \code{discrimination}, \code{difficulty},
+#' \code{guessing}, and \code{inattention},
+#' describing the respective item response theory parameters for each item.
 #' @export
 adapt_test <- function(label,
                        item_bank,
