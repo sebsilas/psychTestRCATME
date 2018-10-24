@@ -1,3 +1,4 @@
+* Added documentation for item banks.
 * Fixed errors when `item_bank` took the form of a tibble.
 
 # psychTestRCAT 1.2.0
@@ -14,3 +15,4 @@ for a single reactive page
 * Updated to match requirements of psychTestR v.2.0.0
 * Introduced feedback graphs
 * Added a `NEWS.md` file to track changes to the package.
+
