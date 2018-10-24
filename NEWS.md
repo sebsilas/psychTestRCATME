@@ -1,3 +1,4 @@
+* Added demo for an adaptive test where `show_item` is a list.
 * Added documentation for item banks.
 * Fixed errors when `item_bank` took the form of a tibble.
 
@@ -15,4 +16,3 @@ for a single reactive page
 * Updated to match requirements of psychTestR v.2.0.0
 * Introduced feedback graphs
 * Added a `NEWS.md` file to track changes to the package.
-
