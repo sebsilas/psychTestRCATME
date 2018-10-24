@@ -1,3 +1,5 @@
+# psychTestRCAT 1.3.0
+
 * Added demo for an adaptive test where `show_item` is a list.
 * Added documentation for item banks.
 * Fixed errors when `item_bank` took the form of a tibble.
