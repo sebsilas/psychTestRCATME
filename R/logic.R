@@ -158,10 +158,11 @@ new_state <- function(num_items_in_test, constrain_answers, item_bank) {
 }
 
 check_inputs <- function(label, item_bank, show_item, opt) {
+  if (!is.function(show_item)) show_item <- psychTestR::as.timeline(show_item)
   stopifnot(
     is.scalar.character(label),
     is.data.frame(item_bank),
-    is.function(show_item)
+    is.function(show_item) || psychTestR::is.timeline(show_item)
   )
   for (col in c("discrimination", "difficulty", "guessing", "inattention")) {
     if (!col %in% names(item_bank)) {
@@ -300,7 +301,7 @@ select_next_item <- function(item_bank, opt) {
 }
 
 administer_next_item <- function(item_bank, show_item) {
-  list(
+  c(
     psychTestR::code_block(fun = function(state, ...) {
       test_state <- psychTestR::get_local("test_state", state)
       item_id <- test_state$next_item$item
