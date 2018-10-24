@@ -269,8 +269,8 @@ select_next_item <- function(item_bank, opt) {
         itemBank = as.matrix(item_bank[, c("discrimination", "difficulty",
                                            "guessing", "inattention")]),
         theta = ability_estimate,
-        out = test_state$results.by_item[, "item_id"],
-        x = test_state$results.by_item[, "score"],
+        out = test_state$results.by_item$item_id,
+        x = test_state$results.by_item$score,
         criterion = opt$next_item.criterion,
         method = opt$next_item.estimator,
         nAvailable = as.numeric(allowed_items),
@@ -368,7 +368,7 @@ save_result <- function(item_bank, opt) {
                                                         "difficulty",
                                                         "guessing",
                                                         "inattention")]
-      tmp_scores <- test_state$results.by_item[, "score"]
+      tmp_scores <- test_state$results.by_item$score
       n <- nrow(test_state$results.by_item)
       test_state$num_items_administered <- n
 
