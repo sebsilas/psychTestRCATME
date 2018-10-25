@@ -6,7 +6,8 @@ cat.feedback.graph <- function(test_label,
                                text_rank = "Your rank compared to previous participants:",
                                x_axis = "Score", y_axis = "Count",
                                next_button = NULL,
-                               digits = 3L) {
+                               digits = 3L,
+                               explain_IRT = TRUE) {
   stopifnot(is.scalar.character(test_label))
   loadNamespace("plotly")
   loadNamespace("ggplot2")
@@ -17,7 +18,8 @@ cat.feedback.graph <- function(test_label,
                                       text_rank = text_rank,
                                       x_axis = x_axis, y_axis = y_axis,
                                       next_button = next_button,
-                                      digits = digits)
+                                      digits = digits,
+                                      explain_IRT = explain_IRT)
   )
 }
 
@@ -47,7 +49,8 @@ cat.feedback.graph.get_rank <- function(all_scores) {
 
 cat.feedback.graph.display_scores <- function(text_finish, text_score, text_rank,
                                               x_axis, y_axis,
-                                              next_button, digits) {
+                                              next_button, digits,
+                                              explain_IRT) {
   stopifnot(is.scalar.character(x_axis),
             is.scalar.character(y_axis),
             is.scalar.character(text_finish) || is(text_finish, "shiny.tag"),
@@ -55,7 +58,8 @@ cat.feedback.graph.display_scores <- function(text_finish, text_score, text_rank
             is.scalar.character(text_rank) || is(text_rank, "shiny.tag"),
             is.null(next_button) || is.scalar.character(next_button) ||
               is(next_button, "shiny.tag"),
-            is.scalar.integerlike(digits))
+            is.scalar.integerlike(digits),
+            is.scalar.logical(explain_IRT))
   psychTestR::reactive_page(function(state, ...) {
     res <- psychTestR::get_local(key = "cat_results", state = state)
     psychTestR::page(
@@ -64,8 +68,16 @@ cat.feedback.graph.display_scores <- function(text_finish, text_score, text_rank
         shiny::p(text_score, shiny::strong(round(res$score, digits = digits))),
         shiny::p(text_rank, shiny::strong(sprintf("%i/%i", res$rank, res$num_scores))),
         if (res$num_scores > 1L)
-          shiny::div(cat.feedback.graph.plot_cat_results(res, x_axis = x_axis, y_axis = y_axis),
-                     style = "border-style: solid; border-width: 1px; background-color: white;"),
+          shiny::div(
+            cat.feedback.graph.plot_cat_results(res, x_axis = x_axis, y_axis = y_axis),
+            if (explain_IRT)
+              shiny::p(
+                "Scores are plotted on an",
+                shiny::tags$a(href = "https://en.wikipedia.org/wiki/Item_response_theory",
+                              "item response theory"),
+                "metric, where the average score is approximately 0",
+                "and the standard deviation is approximately 1."),
+            style = "border-style: solid; border-width: 1px; background-color: white;"),
         if (!is.null(next_button))
           shiny::p(psychTestR::trigger_button("next", next_button))
       )

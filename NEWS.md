@@ -1,3 +1,6 @@
+* Added documentation for the Item Response Theory metric in 
+graph-based feedback.
+
 # psychTestRCAT 1.3.0
 
 * Added demo for an adaptive test where `show_item` is a list.
