@@ -71,12 +71,18 @@ cat.feedback.graph.display_scores <- function(text_finish, text_score, text_rank
           shiny::div(
             cat.feedback.graph.plot_cat_results(res, x_axis = x_axis, y_axis = y_axis),
             if (explain_IRT)
-              shiny::p(
-                "Scores are plotted on an",
-                shiny::tags$a(href = "https://en.wikipedia.org/wiki/Item_response_theory",
-                              "item response theory"),
-                "metric, where the average score is approximately 0",
-                "and the standard deviation is approximately 1."),
+              shiny::div(
+                shiny::p(
+                  "Scores are plotted on an",
+                  shiny::tags$a(href = "https://en.wikipedia.org/wiki/Item_response_theory",
+                                "item response theory"),
+                  "metric, where the mean score in the general population is approximately 0,",
+                  "and the standard deviation in the population is approximately 1."),
+                shiny::p(
+                  "Your score places you in the top",
+                  shiny::strong(paste0(100 - round(100 * pnorm(res$score)), "%")),
+                  "of the general population.")
+              ),
             style = "border-style: solid; border-width: 1px; background-color: white;"),
         if (!is.null(next_button))
           shiny::p(psychTestR::trigger_button("next", next_button))
@@ -104,6 +110,6 @@ cat.feedback.graph.plot_cat_results <- function(res, x_axis, y_axis) {
     ggplot2::theme_bw() +
     ggplot2::theme(panel.grid = ggplot2::element_blank()),
   height = 300)
-                   # panel.background = ggplot2::element_rect(fill = "#f7f7f7"))
+  # panel.background = ggplot2::element_rect(fill = "#f7f7f7"))
   # width = 300, height = 300)
 }
