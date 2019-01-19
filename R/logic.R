@@ -1,9 +1,124 @@
-#' @param item_bank Object of class \code{data.frame}
-#' (or coerceable to \code{data.frame})
-#' defining the item bank.
-#' Mandatory columns are \code{discrimination}, \code{difficulty},
-#' \code{guessing}, and \code{inattention},
-#' describing the respective item response theory parameters for each item.
+#' Adaptive test
+#'
+#' Defines an adaptive test for use within psychTestR.
+#'
+#' This is the top-level function of the psychTestRCAT package.
+#' It defines adaptive tests within the framework of item response theory.
+#' An aadptive test is one that tailors item selection to the
+#' current test-taker on the basis of their performance during the test.
+#' @param label (Character scalar, e.g. 'MDT')
+#' A label for the test when saving the participant's results.
+#' @param item_bank (Data frame, or coerceable to such)
+#' Defines the item bank, the collection of items available
+#' for administration during the adaptive test.
+#' Each row should correspond to a different item.
+#' Four columns are mandatory, corresponding to the
+#' item's psychometric parameters according to item response theory:
+#' - \code{discrimination} -
+#' The item's discrimination parameter, with higher values
+#' indicating that the item is better at discriminating between participants.
+#' - \code{difficulty} -
+#' The item's difficulty parameter, with higher values
+#' corresponding to harder items.
+#' - \code{guessing} -
+#' The item's guessing parameter, corresponding to the probability
+#' that a participant with no ability can nevertheless answer the
+#' item correctly.
+#' - \code{inattention} -
+#' The item's inattention parameter, corresponding to the probability
+#' that a participant with infinite ability answers the question
+#' correctly.
+#'
+#' This argument must also provide sufficient information for presenting
+#' a particular item to the participant.
+#' When an item has been selected,
+#' the corresponding row from the item bank is extracted and
+#' passed to the \code{show_item} function,
+#' another of the arguments to \code{adapt_test}.
+#' The \code{show_item} function uses this row as a basis
+#' to display the item to the participant.
+#'
+#' @param show_item (Function, list, or psychTestR timeline)
+#' This function defines the logic for administering an item
+#' from its definition in \code{item_bank}.
+#' This function may take two forms:
+#' - \strong{Single-page items} -
+#' If your test item takes one psychTestR page to administer,
+#' \code{show_item} should be a function of the form
+#' \code{function(item, state, ...) {...}}.
+#' The \code{item} parameter will correspond to
+#' a row of the \code{item_bank} data frame.
+#' The \code{state} parameter (advanced use only)
+#' allows the \code{show_item} function to access
+#' additional information about the current psychTestR session,
+#' e.g. local variables (see \code{\link[psychTestR]{get_local}}).
+#' The function should return a psychTestR \code{\link[psychTestR]{page}}
+#' displaying the test item and storing the response in \code{answer(state)};
+#' psychTestR's built-in question functions
+#' (e.g. \code{\link[psychTestR]{NAFC_page}})
+#' do the latter automatically.
+#'
+#' - \strong{Multi-page items} -
+#' If your test item takes multiple psychTestR pages to administer,
+#' \code{show_item} should be a list of psychTestR test elements
+#' or, equivalently, a psychTestR timeline as created by
+#' \code{\link[psychTestR]{new_timeline}}).
+#' Mutability is achieved by using reactive pages
+#' (\code{\link[psychTestR]{reactive_page}}),
+#' which can access the current value of \code{item} from
+#' the psychTestR session state object as follows:
+#' \code{psychTestR::get_local("item", state)}.
+#' When the timeline completes, \code{answer(state)} must
+#' be set to the participant's answer.
+#' If several pages contribute to the final answer,
+#' this may involve accumulating values in a temporary variable
+#' (see \code{\link[psychTestR]{get_local}}
+#' and \code{\link[psychTestR]{set_local}}).
+#'
+#' psychTestR's built-in question functions
+#' (e.g. \code{\link[psychTestR]{NAFC_page}})
+#' by default save each response to the psychTestR results list.
+#' This behaviour is unnecessary in \code{show_item},
+#' because psychTestRCAT accumulates and saves its own store
+#' of item-wise results.
+#' It is therefore recommended to set \code{save_answer = FALSE}
+#' in these question functions.
+#'
+#' @param stopping_rule (Function)
+#' A stopping rule for determining when the test should terminate,
+#' as created by \code{\link{new_stopping_rule}}.
+#' In the common case where the test terminates after a set number of items,
+#' use \code{\link{stopping_rule.num_items}},
+#' passing the number of items as a function parameter.
+#'
+#' @param opt (List)
+#' A list of further options as created by \code{\link{adapt_test_options}}.
+#'
+#' @return A psychTestR timeline representing the adaptive test.
+#' Once the adaptive test is complete,
+#' psychTestR saves three primary results into the results table:
+#' - \code{ability} - The participant's final ability estimate.
+#' - \code{ability_sem} - The standard error of the final ability estimate,
+#' as computed from the IRT model.
+#' - \code{num_items} - The number of items administered to the participant.
+#'
+#' Further information, in particular item-by-item results,
+#' can be extracted from the \code{metadata} slot of the \code{ability} field.
+#' This can be accessed by loading psychTestR RDS results files.
+#' Alternatively, item-by-item results can be accessed
+#' using the function \code{\link{compile_trial_by_trial_results}}.
+#'
+#' @note
+#' By default, \code{adapt_test} displays no feedback to the
+#' participant when they finish the test.
+#' Use \code{\link{cat.feedback.graph}} directly after \code{adapt_test}
+#' to display a feedback graph to the participant.
+#'
+#' @note
+#' Ability estimation and item selection are performed using
+#' the \code{catR} package.
+#'
+#' @md
 #' @export
 adapt_test <- function(label,
                        item_bank,
