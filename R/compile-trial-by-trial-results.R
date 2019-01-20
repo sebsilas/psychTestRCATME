@@ -12,8 +12,8 @@
 #' @export
 compile_trial_by_trial_results <- function(in_dir = "output/results", label,
                                            combine = TRUE) {
-  assertthat::assert_that(is.character(in_dir), assertthat::is.scalar(in_dir),
-                          is.logical(combine), assertthat::is.scalar(combine))
+  stopifnot(is.character(in_dir), is.scalar(in_dir),
+            is.logical(combine), is.scalar(combine))
   if (!dir.exists(in_dir))
     stop("input directory '", in_dir, "' could not be found")
   files <- list.files(in_dir, pattern = "\\.rds",

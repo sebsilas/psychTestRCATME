@@ -35,6 +35,14 @@ that a participant with infinite ability answers the question
 correctly.
 }
 
+The data frame must also contain a column called \code{answer},
+defining the correct answer for each item.
+These answers will be checked for equality with
+the answer output from \code{show_item} using \code{==},
+which coerces to a shared class
+(e.g. numeric answers can be coerced to character answers).
+List-columns are not permitted.
+
 This argument must also provide sufficient information for presenting
 a particular item to the participant.
 When an item has been selected,

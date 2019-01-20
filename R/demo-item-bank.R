@@ -16,8 +16,8 @@ demo_item_bank <- function(n = 20, questions = 1:4, answers = 1:2) {
   )
   data.frame(
     id = seq_len(n),
-    discrimination = runif(min = 1, max = 2, n = n),
-    difficulty = rnorm(n),
+    discrimination = stats::runif(min = 1, max = 2, n = n),
+    difficulty = stats::rnorm(n),
     guessing = 0,
     inattention = 1,
     question = sample(questions, size = n, replace = TRUE),

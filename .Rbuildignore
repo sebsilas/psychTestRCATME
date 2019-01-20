@@ -1,3 +1,4 @@
+^output$
 ^LICENSE\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$

@@ -132,7 +132,7 @@ cat.feedback.graph.display_scores <- function(text_finish, text_score, text_rank
                   "and the standard deviation in the population is approximately 1."),
                 shiny::p(
                   "Your score places you in the top",
-                  shiny::strong(paste0(100 - round(100 * pnorm(res$score)), "%")),
+                  shiny::strong(paste0(100 - round(100 * stats::pnorm(res$score)), "%")),
                   "of the general population.")
               ),
             style = "border-style: solid; border-width: 1px; background-color: white;"),

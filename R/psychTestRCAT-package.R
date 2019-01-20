@@ -17,3 +17,16 @@
 #' @md
 #' @keywords internal
 "_PACKAGE"
+
+
+
+#' psychTestRCAT dictionary
+#'
+#' This object defines a dictionary (see \code{\link[psychTestR]{i18n_dict}})
+#' for internationalising psychTestRCAT.
+#'
+#' @keywords data
+#' @docType data
+#' @name ptrcat_dict
+#' @rdname ptrcat_dict
+NULL

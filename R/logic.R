@@ -29,6 +29,14 @@
 #' that a participant with infinite ability answers the question
 #' correctly.
 #'
+#' The data frame must also contain a column called \code{answer},
+#' defining the correct answer for each item.
+#' These answers will be checked for equality with
+#' the answer output from \code{show_item} using \code{==},
+#' which coerces to a shared class
+#' (e.g. numeric answers can be coerced to character answers).
+#' List-columns are not permitted.
+#'
 #' This argument must also provide sufficient information for presenting
 #' a particular item to the participant.
 #' When an item has been selected,
@@ -139,7 +147,81 @@ adapt_test <- function(label,
     finalise(opt))
 }
 
-#' @param eligible_first_items NULL or numeric vector listing eligible items for the first item in the test (e.g. c(2, 3, 4) means that the first item will be drawn from rows 2, 3, 4 of the item bank)
+#' Adaptive test options
+#'
+#' Creates a list of psychTestRCAT options for use in
+#' the \code{\link{adapt_test}} function.
+#'
+#' @param next_item.criterion
+#' (Character scalar, default = "MFI")
+#' Criterion by which the next item is selected;
+#' see the \code{criterion} argument of \code{\link[catR]{nextItem}}.
+#'
+#' @param next_item.estimator
+#' (Character scalar, default = "BM")
+#' Ability scoring method used for item selection;
+#' see the \code{method} argument of \code{\link[catR]{nextItem}}.
+#' Only \code{"BM"}, \code{"ML"}, \code{"WL"}, and \code{"EAP"}
+#' are supported.
+#'
+#' @param next_item.prior_dist
+#' (Character scalar, default = "norm")
+#' Class of prior distribution used when estimating abilities
+#' for item selection;
+#' see the \code{priorDist} argument of \code{\link[catR]{nextItem}}.
+#'
+#' @param next_item.prior_par
+#' (Numeric vector, length 2, default = c(0, 1))
+#' Prior distribution used when estimating abilities for item selection;
+#' see the \code{priorPar} argument of \code{\link[catR]{nextItem}}.
+#'
+#' @param final_ability.estimator
+#' (Character scalar, default = "BM")
+#' Ability scoring method used for final ability estimation;
+#' see the \code{method} argument of \code{\link[catR]{nextItem}}.
+#' The prior distribution (if relevant) remains the same as that used
+#' for item selection, i.e. that specified by
+#' \code{next_item.prior_dist} and \code{next_item.prior_par}.
+#' Only \code{"BM"}, \code{"ML"}, \code{"WL"}, and \code{"EAP"}
+#' are supported.
+#'
+#' @param constrain_answers
+#' (Boolean; default = FALSE)
+#' If \code{TRUE}, item selection actively balances
+#' the available response options.
+#' This only makes sense when the item bank contains only a small
+#' number of unique answers.
+#'
+#' @param avoid_duplicates
+#' (\code{NULL} or character scalar)
+#' If not \code{NULL}, should specify a column of the item bank
+#' defining a categorical item feature for which duplicates
+#' should be avoided during item selection.
+#'
+#' @param cb_control
+#' Content-balancing argument passed to \code{\link[catR]{nextItem}}.
+#'
+#' @param cb_group
+#' Content-balancing argument passed to \code{\link[catR]{nextItem}}.
+#'
+#' @param eligible_first_items
+#' (\code{NULL} or integerish vector)
+#' If not \code{NULL},
+#' lists the eligible items for the first item in the test,
+#' where each item is identified by its 1-indexed row number
+#' in \code{item_bank} (see \code{\link{adapt_test}}).
+#' For example, \code{c(2, 3, 4)} means that the
+#' first item will be drawn from rows 2, 3, 4 of the item bank).
+#'
+#' @param notify_duration
+#' (Numeric scalar)
+#' Defines the length of time for which item-by-item feedback messages
+#' persist on screen, in seconds.
+#' This is only relevant when the test is taken in admin or demo mode.
+#'
+#' @return A list to be passed to the \code{opt} argument
+#' of \code{\link{adapt_test}}.
+#'
 #' @export
 adapt_test_options <- function(next_item.criterion = "MFI",
                                next_item.estimator = "BM",
@@ -179,6 +261,34 @@ adapt_test_options <- function(next_item.criterion = "MFI",
 
 # returns TRUE if we should stop
 
+#' New stopping rule
+#'
+#' Creates a new stopping rule for the adaptive test.
+#'
+#' A stopping rule defines a condition that is checked each time
+#' a new item is about to be administered.
+#'
+#' @param f
+#' Function of the form \code{function(test_state) {...}},
+#' which will be called whenever a new item is about to be administered.
+#' \code{test_state} is a data frame representing the current status of
+#' the adaptive test (items administered, participant responses, etc.).
+#' Currently the only method defined for \code{test_state} objects
+#' is \code{\link{get_num_items_administered}};
+#' other extractors need to be defined manually.
+#'
+#' @param num_items_in_test
+#' (NULL or integerish scalar)
+#' If the number of items in the test is known,
+#' providing it in this argument allows it to be used by other test features,
+#' e.g. to tell the participant their progress through the test.
+#'
+#' @return
+#' An object of class \code{stopping_rule} which can be
+#' passed to the \code{stopping_rule} argument of
+#' \code{\link{adapt_test}}.
+#'
+#' @export
 new_stopping_rule <- function(f, num_items_in_test = NULL) {
   stopifnot(is.function(f), is.null.or(num_items_in_test, is.scalar.numeric))
   class(f) <- c("stopping_rule", class(f))
@@ -186,6 +296,20 @@ new_stopping_rule <- function(f, num_items_in_test = NULL) {
   f
 }
 
+#' Stopping rule (num items)
+#'
+#' Creates a stopping rule where the test finishes once a set number
+#' of items have been administered.
+#'
+#' @param n
+#' (Integerish scalar)
+#' Number of items after which the test should terminate.
+#'
+#' @return
+#' An object of class \code{stopping_rule} which can be
+#' passed to the \code{stopping_rule} argument of
+#' \code{\link{adapt_test}}.
+#'
 #' @export
 stopping_rule.num_items <- function(n) {
   if (is.null(n)) stop("number of items cannot be NULL")
@@ -196,6 +320,17 @@ stopping_rule.num_items <- function(n) {
   new_stopping_rule(f, num_items_in_test = n)
 }
 
+#' Number of items administered
+#'
+#' Returns the number of items administered so far in the test.
+#'
+#' @param test_state
+#' A \code{test_state} object; see \code{\link{new_stopping_rule}}.
+#'
+#' @return
+#' (Integer scalar)
+#' The number of items administered so far in the test.
+#'
 #' @export
 get_num_items_administered <- function(test_state) {
   df <- test_state$results.by_item
@@ -207,36 +342,86 @@ get_items_administered <- function(test_state) {
   if (is.null(df)) integer() else as.integer(df$item_id)
 }
 
+#' Get item number
+#'
+#' Returns an item's position in the test.
+#'
+#' @param x An item object as passed to the \code{show_item} function
+#' (see \code{\link{adapt_test}}).
+#'
+#' @return
+#' (Integer scalar) The item's position in the test; for example,
+#' the second item in the test would yield the integer \code{2L}.
+#'
+#' @rdname get_item_number
 #' @export
 get_item_number <- function(x) {
   UseMethod("get_item_number")
 }
 
+#' @rdname get_item_number
 #' @export
 get_item_number.item <- function(x) {
   attr(x, "item_number")
 }
 
+#' Number of items in test
+#'
+#' Returns the total number of items in the test,
+#' including those that have yet to be administered.
+#' Methods exist for:
+#' - \code{stopping_rule} (see \code{\link{new_stopping_rule}}).
+#' - \code{item} (as passed to \code{show_item} in \code{\link{adapt_test}}).
+#' - \code{test_state} (as passed to stopping rules,
+#' see \code{\link{new_stopping_rule}}).
+#'
+#' @param x Object from which to extract the information.
+#' @return (Integer scalar)
+#' The total number of items in the test,
+#' including those that have yet to be administered.
+#'
+#' @md
+#' @rdname get_num_items_in_test
 #' @export
 get_num_items_in_test <- function(x) {
   UseMethod("get_num_items_in_test")
 }
 
+#' @rdname get_num_items_in_test
 #' @export
 get_num_items_in_test.stopping_rule <- function(x) {
   attr(x, "num_items_in_test")
 }
 
+#' @rdname get_num_items_in_test
 #' @export
 get_num_items_in_test.item <- function(x) {
   attr(x, "num_items_in_test")
 }
 
+#' @rdname get_num_items_in_test
 #' @export
 get_num_items_in_test.test_state <- function(x) {
   x$num_items_in_test
 }
 
+#' Current ability estimate
+#'
+#' Returns the current ability estimate.
+#'
+#' @param test_state A \code{test_state} object as provided to
+#' stopping rules in \code{\link{new_stopping_rule}}.
+#'
+#' @param opt Test options as defined by \code{\link{adapt_test_options}}.
+#'
+#' @param estimator The estimation method to use when computing
+#' the current ability estimate;
+#' see the \code{next_item.estimator} argument in
+#' \code{\link{adapt_test_options}}.
+#'
+#' @return A numeric scalar corresponding to the current ability estimate,
+#' with its standard error provided as the \code{sem} attribute.
+#'
 #' @export
 get_current_ability_estimate <- function(test_state,
                                          opt,
@@ -279,6 +464,9 @@ check_inputs <- function(label, item_bank, show_item, opt) {
     is.data.frame(item_bank),
     is.function(show_item) || psychTestR::is.timeline(show_item)
   )
+  if (is.null(item_bank$answer)) "answer column not found in item bank"
+  if (is.list(item_bank$answer)) "answer column cannot be a list"
+
   for (col in c("discrimination", "difficulty", "guessing", "inattention")) {
     if (!col %in% names(item_bank)) {
       stop("column ", col, " not found in <item_bank>")
@@ -319,9 +507,9 @@ check_stopping_rule <- function(stopping_rule) {
   }
 }
 
-#' The item must match correct_answers (if specified),
-#' and it must avoid duplicates in opt$avoid_duplicates.
-#' If this is not possible, the item is chosen randomly, with a warning.
+# The item must match correct_answers (if specified),
+# and it must avoid duplicates in opt$avoid_duplicates.
+# If this is not possible, the item is chosen randomly, with a warning.
 get_allowed_items <- function(test_state, item_bank, opt) {
   cond1 <- is_answer_valid(test_state, item_bank)
   cond2 <- are_duplicates_avoided(test_state, item_bank, opt)
