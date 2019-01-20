@@ -26,6 +26,18 @@ is.null.or <- function(x, f) {
   is.null(x) || f(x)
 }
 
+#' Assert that a global variable is NULL
+#'
+#' This function checks whether a specified global variable
+#' in a psychTestR state object is \code{NULL}.
+#' If so, it throws an error.
+#' @param key
+#' (Character scalar)
+#' Identifies the global variable to be checked.
+#'
+#' @param state
+#' A psychTestR state object.
+#'
 #' @export
 assert_global_is_null <- function(key, state) {
   stopifnot(is.scalar.character(key), is(state, "state"))

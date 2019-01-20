@@ -1,3 +1,4 @@
+* Documented all exported functions.
 * Added documentation for the Item Response Theory metric in 
 graph-based feedback.
 
