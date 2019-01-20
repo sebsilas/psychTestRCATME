@@ -1,6 +1,9 @@
+# psychTestRCAT 1.4.0
+
 * Documented all exported functions.
 * Added documentation for the Item Response Theory metric in 
 graph-based feedback.
+* Bugfixes for when `show_item` is a list of test elements.
 
 # psychTestRCAT 1.3.0
 
