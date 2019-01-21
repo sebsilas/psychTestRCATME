@@ -21,6 +21,6 @@ Imports:
     magrittr (>= 1.5),
     utils,
     checkmate
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Byte-Compile: yes
-Remotes: pmcharrison/psychTestR@dev
+Remotes: pmcharrison/psychTestR
