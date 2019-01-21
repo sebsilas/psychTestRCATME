@@ -1,5 +1,7 @@
 # psychTestRCAT 1.5.0
 
+* Creating website.
+
 # psychTestRCAT 1.4.0
 
 * Documented all exported functions.
