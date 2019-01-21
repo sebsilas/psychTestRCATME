@@ -1,3 +1,5 @@
+# psychTestRCAT 1.5.0
+
 # psychTestRCAT 1.4.0
 
 * Documented all exported functions.
