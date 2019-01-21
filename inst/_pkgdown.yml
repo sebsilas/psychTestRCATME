@@ -1,0 +1,47 @@
+reference:
+- title: Top level
+  desc: Start here when creating an adaptive test with psychTestRCAT.
+  contents:
+  - '`adapt_test`'
+  - '`adapt_test_options`'
+
+- title: Post-processing
+  desc: These functions can be used to post-process data created by psychTestRCAT.
+  contents:
+  - '`compile_trial_by_trial_results`'
+
+- title: Feedback
+  desc: These functions provide custom feedback to the participant after they complete the test.
+  contents:
+  - '`cat.feedback.graph`'
+
+- title: Stopping rules
+  desc: These functions define when the test should terminate.
+  contents:
+  - '`new_stopping_rule`'
+  - '`stopping_rule.num_items`'
+
+- title: Test state
+  desc: These functions access various aspects of the test's current state.
+  contents:
+  - '`get_current_ability_estimate`'
+  - '`get_item_number`'
+  - '`get_num_items_administered`'
+  - '`get_num_items_in_test`'
+
+- title: Internationalisation
+  desc: These materials are relevant for delivering adaptive tests in different languages.
+  contents:
+  - '`ptrcat_dict`'
+
+- title: Utilities
+  desc: ~
+  contents:
+  - '`assert_global_is_null`'
+
+- title: Demo
+  desc: ~
+  contents:
+  - '`demo_item_bank`'
+  - '`demo_show_item_list`'
+

@@ -1,3 +1,39 @@
-# psychTestRCAT - Computerised adaptive testing with psychTestR
+
+# psychTestRCAT
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1415357.svg)](https://doi.org/10.5281/zenodo.1415357)
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+
+[psychTestRCAT](https://pmcharrison.github.io/psychTestRCAT/) is an R
+package for developing and administering adaptive ability tests under
+the framework of item response theory. Adaptive tests tailor their
+difficulty to each participant on the basis of their previous responses.
+This adaptive approach can make tests considerably more efficient, and
+allows one test to serve a wide range of abilities.
+
+psychTestRCAT depends on
+[psychTestR](https://pmcharrison.github.io/psychTestR/), an R package
+for constructing psychological testing interfaces.
+
+## Installation
+
+``` r
+if (!requireNamespace("devtools")) install.packages("devtools")
+devtools::install_github("pmcharrison/psychTestRCAT")
+```
+
+## Examples
+
+  - Computerised Adaptive Beat Alignment Test (CA-BAT):
+    [demo](http://shiny.pmcharrison.com/cabat-demo),
+    [source](https://github.com/pmcharrison/cabat),
+    [paper](https://doi.org/10.1038/s41598-018-30318-8)
+  - Melodic Discrimination Test (MDT):
+    [demo](http://shiny.pmcharrison.com/mdt-demo),
+    [source](https://github.com/pmcharrison/mdt),
+    [paper](https://doi.org/10.1038/s41598-017-03586-z)
+  - Mistuning Perception Test (MPT):
+    [demo](http://shiny.pmcharrison.com/mpt-demo),
+    [source](https://github.com/pmcharrison/mpt)
+  - Pitch imagery arrow task (PIAT):
+    [demo](http://shiny.pmcharrison.com/piat-demo)
