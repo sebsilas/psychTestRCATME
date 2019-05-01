@@ -1,6 +1,8 @@
 
 # psychTestRCAT
 
+[![Travis build
+status](https://travis-ci.org/pmcharrison/psychTestRCAT.svg?branch=master)](https://travis-ci.org/pmcharrison/psychTestRCAT)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1415357.svg)](https://doi.org/10.5281/zenodo.1415357)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
