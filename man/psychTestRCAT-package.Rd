@@ -23,6 +23,14 @@ Beat perception test.
 Pitch imagery test.
 }
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/pmcharrison/psychTestRCAT}
+  \item Report bugs at \url{https://github.com/pmcharrison/psychTestRCAT/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Peter Harrison \email{p.m.c.harrison@qmul.ac.uk}
 
