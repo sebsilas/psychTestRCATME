@@ -137,7 +137,7 @@ adapt_test <- function(label,
   check_inputs(label, item_bank, show_item, opt)
   c(
     setup(label, stopping_rule, opt, item_bank),
-    psychTestR::loop_while(
+    psychTestR::while_loop(
       test = check_stopping_rule(stopping_rule),
       logic = c(
         select_next_item(item_bank, opt),

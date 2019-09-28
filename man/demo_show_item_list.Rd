@@ -11,7 +11,7 @@ This is a demonstration of an adaptive test with a variable number
 of pages for each item.
 This is achieved by using a \code{show_item} argument corresponding
 to a list of test elements.
-The crucial trick is using a \code{loop_while} function to
+The crucial trick is using a \code{while_loop} function to
 repeat a 'reactive page' until the item is complete,
 and a local variable \code{counter} to keep track of the iteration number.
 }
