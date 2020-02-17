@@ -82,7 +82,7 @@ cat.feedback.graph <- function(
     warning("Currently the IRT explanations are not internationalised.")
 
   text <- function(x) {
-    if (i18n) psychTestR::i18n(x) else text
+    if (i18n) psychTestR::i18n(x) else x
   }
 
   elts <- expression({
