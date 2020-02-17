@@ -1,3 +1,5 @@
+# psychTestRCAT 1.6.0
+
 * Added internationalisation for feedback pages.
 * Introduced new feedback pages: cat.feedback.iq and cat.feedback.irt.
 * Added dictionary regression tests.
