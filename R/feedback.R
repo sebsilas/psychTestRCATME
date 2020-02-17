@@ -48,31 +48,63 @@
 #' item response theory.
 #' Currently only English language is supported.
 #'
-#' @return A test element suitable for inclusion in a psychTestR timeline
+#' @param i18n (Logical scalar)
+#' Whether internationalisation should be enabled.
+#' Defaults to \code{FALSE} to preserve back-compatibility.
+#'
+#' @param dict
+#' Internationalisation dictionary (see \code{\link[psychTestR]{i18n_dict}}).
+#'
+#' @return
+#' A test element (or, if \code{i18n} is TRUE, a timeline segment)
+#' suitable for inclusion in a psychTestR timeline
 #' directly after \code{\link{adapt_test}}.
+#'
 #' @export
-cat.feedback.graph <- function(test_label,
-                               text_finish = "You finished the test!",
-                               text_score = "Your final score:",
-                               text_rank = "Your rank compared to previous participants:",
-                               x_axis = "Score",
-                               y_axis = "Count",
-                               next_button = NULL,
-                               digits = 3L,
-                               explain_IRT = TRUE) {
+cat.feedback.graph <- function(
+  test_label,
+  text_finish = if (!i18n) "You finished the test!" else "you_finished",
+  text_score = if (!i18n) "Your final score:" else "your_score",
+  text_rank = if (!i18n) "Your rank compared to previous participants:" else "your_rank",
+  x_axis = if (!i18n) "Score" else "score",
+  y_axis = if (!i18n) "Count" else "count",
+  next_button = NULL,
+  digits = 3L,
+  explain_IRT = !i18n,
+  i18n = FALSE,
+  dict = psychTestRCAT::ptrcat_dict
+) {
   stopifnot(is.scalar.character(test_label))
   loadNamespace("plotly")
   loadNamespace("ggplot2")
-  c(
-    cat.feedback.graph.manage_scores(test_label = test_label),
-    cat.feedback.graph.display_scores(text_finish = text_finish,
-                                      text_score = text_score,
-                                      text_rank = text_rank,
-                                      x_axis = x_axis, y_axis = y_axis,
-                                      next_button = next_button,
-                                      digits = digits,
-                                      explain_IRT = explain_IRT)
-  )
+
+  if (i18n && explain_IRT)
+    warning("Currently the IRT explanations are not internationalised.")
+
+  text <- function(x) {
+    if (i18n) psychTestR::i18n(x) else x
+  }
+
+  elts <- expression({
+    psychTestR::join(
+      cat.feedback.graph.manage_scores(test_label = test_label),
+      cat.feedback.graph.display_scores(text_finish = text(text_finish),
+                                        text_score = text(text_score),
+                                        text_rank = text(text_rank),
+                                        x_axis = text(x_axis),
+                                        y_axis = text(y_axis),
+                                        next_button = next_button,
+                                        digits = digits,
+                                        explain_IRT = explain_IRT)
+    )
+  })
+
+  if (i18n) {
+    psychTestR::new_timeline(eval(elts), dict = dict)
+  } else {
+    eval(elts)
+  }
+
 }
 
 cat.feedback.graph.manage_scores <- function(test_label) {
@@ -164,4 +196,126 @@ cat.feedback.graph.plot_cat_results <- function(res, x_axis, y_axis) {
   height = 300)
   # panel.background = ggplot2::element_rect(fill = "#f7f7f7"))
   # width = 300, height = 300)
+}
+
+#' Feedback on IRT score
+#'
+#' Displays the participant's IRT score and associated standard error
+#' to the participant. Most participants won't know what these scores mean;
+#' however, this feedback option can be useful to experimenters
+#' conducting in-lab studies, because it means they can write down
+#' the final scores manually.
+#'
+#' @param text (Character scalar)
+#' Text to display to the participant. This text will be treated as an
+#' internationalisation key for the dictionary contained in the \code{dict}
+#' argument; if the key is not present in the dictionary, the text
+#' will be displayed as is.
+#'
+#' @param digits_irt_score (Numeric scalar)
+#' Number of digits to which the IRT score should be rounded.
+#'
+#' @param digits_irt_sem (Numeric scalar)
+#' Number of digits to which the IRT standard error should be rounded.
+#'
+#' @return A timeline segment suitable for inclusion in a psychTestR timeline
+#' directly after \code{\link{adapt_test}}.
+#'
+#' @inheritParams cat.feedback.graph
+#'
+#' @export
+cat.feedback.irt <- function(
+  text = "feedback_irt",
+  dict = psychTestRCAT::ptrcat_dict,
+  next_button = NULL,
+  digits_irt_score = 3L,
+  digits_irt_sem = 3L
+) {
+  psychTestR::new_timeline(psychTestR::reactive_page(function(state, ...) {
+    irt_score <- psychTestR::answer(state)$ability
+    irt_sem <- psychTestR::answer(state)$ability_sem
+    psychTestR::page(
+      ui = shiny::div(
+        shiny::p(
+          psychTestR::i18n(
+            text,
+            sub = c(
+              irt_score = round(irt_score, digits = digits_irt_score),
+              irt_sem = round(irt_sem, digits = digits_irt_sem)
+            )
+          )
+        ),
+        if (!is.null(next_button))
+          shiny::p(psychTestR::trigger_button("next", next_button))
+      )
+    )
+  }),
+  dict = dict)
+}
+
+#' Feedback on IQ score
+#'
+#' Provides feedback for the adaptive test framed in terms of an
+#' 'IQ' score. IQ scores are rescaling of IRT scores to a scale
+#' with mean 100 and standard deviation 15.
+#' The feedback also provides an interpration of the IQ score as a percentile
+#' with respect to the general population.
+#'
+#' @param test_label (Character scalar)
+#' The label for the test, e.g. "MDT". This will be used to label the IQ score,
+#' e.g. "Your MDT-IQ was...".
+#'
+#' @param feedback_iq (Character scalar)
+#' Text to display to the participant. This text will be treated as an
+#' internationalisation key for the dictionary contained in the \code{dict}
+#' argument; if the key is not present in the dictionary, the text
+#' will be displayed as is.
+#'
+#' @param digits_iq (Numeric scalar)
+#' Number of digits to which the IQ score should be rounded.
+#'
+#' @param digits_percentile (Numeric scalar)
+#' Number of digits to which the percentile score should be rounded.
+#'
+#' @return A timeline segment suitable for inclusion in a psychTestR timeline
+#' directly after \code{\link{adapt_test}}.
+#'
+#' @inheritParams cat.feedback.graph
+#' @inheritParams cat.feedback.irt
+#'
+#' @export
+cat.feedback.iq <- function(
+  test_label,
+  text = "feedback_iq",
+  dict = psychTestRCAT::ptrcat_dict,
+  next_button = NULL,
+  digits_iq = 0L,
+  digits_percentile = 0L
+) {
+  checkmate::qassert(test_label, "S1")
+  checkmate::qassert(text, "S1")
+  checkmate::qassert(digits_iq, "X1")
+  checkmate::qassert(digits_percentile, "X1")
+  psychTestR::new_timeline(psychTestR::reactive_page(function(state, ...) {
+    irt_score <- psychTestR::answer(state)$ability
+    iq_score <- 100 + irt_score * 15
+    percentile <- stats::pnorm(irt_score)
+    psychTestR::page(
+      ui = shiny::div(
+        shiny::p(
+          psychTestR::i18n(
+            text,
+            sub = c(
+              test_name = test_label,
+              test_score = round(iq_score, digits = digits_iq),
+              test_threshold = round(100 * percentile, digits = digits_percentile)
+            )
+          )
+        ),
+        if (!is.null(next_button))
+          shiny::p(psychTestR::trigger_button("next", next_button))
+      )
+    )
+  }),
+  dict = dict)
 }

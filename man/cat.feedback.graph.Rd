@@ -4,11 +4,13 @@
 \alias{cat.feedback.graph}
 \title{Feedback graph}
 \usage{
-cat.feedback.graph(test_label, text_finish = "You finished the test!",
-  text_score = "Your final score:",
-  text_rank = "Your rank compared to previous participants:",
-  x_axis = "Score", y_axis = "Count", next_button = NULL,
-  digits = 3L, explain_IRT = TRUE)
+cat.feedback.graph(test_label, text_finish = if (!i18n)
+  "You finished the test!" else "you_finished", text_score = if (!i18n)
+  "Your final score:" else "your_score", text_rank = if (!i18n)
+  "Your rank compared to previous participants:" else "your_rank",
+  x_axis = if (!i18n) "Score" else "score", y_axis = if (!i18n) "Count"
+  else "count", next_button = NULL, digits = 3L, explain_IRT = !i18n,
+  i18n = FALSE, dict = psychTestRCAT::ptrcat_dict)
 }
 \arguments{
 \item{test_label}{(Character scalar)
@@ -47,9 +49,16 @@ Number of digits to which participant scores should be rounded.}
 If TRUE, the feedback page includes an academic explanation of
 item response theory.
 Currently only English language is supported.}
+
+\item{i18n}{(Logical scalar)
+Whether internationalisation should be enabled.
+Defaults to \code{FALSE} to preserve back-compatibility.}
+
+\item{dict}{Internationalisation dictionary (see \code{\link[psychTestR]{i18n_dict}}).}
 }
 \value{
-A test element suitable for inclusion in a psychTestR timeline
+A test element (or, if \code{i18n} is TRUE, a timeline segment)
+suitable for inclusion in a psychTestR timeline
 directly after \code{\link{adapt_test}}.
 }
 \description{

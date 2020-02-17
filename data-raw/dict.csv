@@ -1,9 +1,11 @@
-key,EN,DE
-"you_finished","You finished the test!","Du hast den Test beendet!"
-"your_score","Your final score:","Dein Ergebniswert ist:"
-"your_rank","Your rank compared to previous participants:","Deine Rangposition im Vergleich mit früheren Testteilnehmern ist:"
-"score","Score","Ergebniswert"
-"count","Count","Summe"
-"next","Next","Weiter",
-"difficulty","Difficulty","Schwierigkeit"
-"ability","Ability","Fähigkeit"
+key,EN,DE,RU
+you_finished,You finished the test!,Du hast den Test beendet!,Вы завершили тест!
+your_score,Your final score:,Dein Ergebniswert ist:,Ваш результат:
+your_rank,Your rank compared to previous participants:,Deine Rangposition im Vergleich mit früheren Testteilnehmern ist:,Ваше положение относительно предыдущих участников:
+score,Score,Ergebniswert,Количество баллов
+count,Count,Summe,Общее количество
+next,Next,Weiter,Далее
+difficulty,Difficulty,Schwierigkeit,Сложность
+ability,Ability,Fähigkeit,Способность
+feedback_iq,Your {{test_name}}-IQ was **{{test_score}}**. This means that you are better than **{{test_threshold}}%** of the population on this task.,"Dein {{test_name}}-IQ is **{{test_score}}**. Das bedeutet, dass du besser als **{{test_threshold}}%** der Bevölkerung bei dieser Aufgabe warst.","Ваш {{test_name}}-IQ равен **{{test_score}}**. Это значит, что вы выполнили тест лучше, чем **{{test_threshold}}%** предыдущих участников."
+feedback_irt,Your item response score is **{{irt_score}}** with a standard error of measurement of **{{irt_sem}}**.  ,Dein Item-Response-Wert is **{{irt_score}}** mit einem Standardmessfehler von **{{irt_sem}}**.  ,Ваш балл равен **{{irt_score}}** со стандартной ошибкой измерения **{{irt_sem}}**.
