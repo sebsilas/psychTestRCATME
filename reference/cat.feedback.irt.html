@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Number of items in test — get_num_items_in_test • psychTestRCAT</title>
+<title>Feedback on IRT score — cat.feedback.irt • psychTestRCAT</title>
 
 
 <!-- jquery -->
@@ -35,16 +35,12 @@
 
 
 
-<meta property="og:title" content="Number of items in test — get_num_items_in_test" />
-<meta property="og:description" content="Returns the total number of items in the test,
-including those that have yet to be administered.
-Methods exist for:
-stopping_rule (see new_stopping_rule).
-item (as passed to show_item in adapt_test).
-test_state (as passed to stopping rules,
-see new_stopping_rule).
-
-" />
+<meta property="og:title" content="Feedback on IRT score — cat.feedback.irt" />
+<meta property="og:description" content="Displays the participant's IRT score and associated standard error
+to the participant. Most participants won't know what these scores mean;
+however, this feedback option can be useful to experimenters
+conducting in-lab studies, because it means they can write down
+the final scores manually." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -116,48 +112,62 @@ see new_stopping_rule).
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Number of items in test</h1>
-    <small class="dont-index">Source: <a href='https://github.com/pmcharrison/psychTestRCAT/blob/master/R/logic.R'><code>R/logic.R</code></a></small>
-    <div class="hidden name"><code>get_num_items_in_test.Rd</code></div>
+    <h1>Feedback on IRT score</h1>
+    <small class="dont-index">Source: <a href='https://github.com/pmcharrison/psychTestRCAT/blob/master/R/feedback.R'><code>R/feedback.R</code></a></small>
+    <div class="hidden name"><code>cat.feedback.irt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Returns the total number of items in the test,
-including those that have yet to be administered.
-Methods exist for:</p><ul>
-<li><p><code>stopping_rule</code> (see <code><a href='new_stopping_rule.html'>new_stopping_rule</a></code>).</p></li>
-<li><p><code>item</code> (as passed to <code>show_item</code> in <code><a href='adapt_test.html'>adapt_test</a></code>).</p></li>
-<li><p><code>test_state</code> (as passed to stopping rules,
-see <code><a href='new_stopping_rule.html'>new_stopping_rule</a></code>).</p></li>
-</ul>
-
+    <p>Displays the participant's IRT score and associated standard error
+to the participant. Most participants won't know what these scores mean;
+however, this feedback option can be useful to experimenters
+conducting in-lab studies, because it means they can write down
+the final scores manually.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_num_items_in_test</span>(<span class='no'>x</span>)
-
-<span class='co'># S3 method for stopping_rule</span>
-<span class='fu'>get_num_items_in_test</span>(<span class='no'>x</span>)
-
-<span class='co'># S3 method for item</span>
-<span class='fu'>get_num_items_in_test</span>(<span class='no'>x</span>)
-
-<span class='co'># S3 method for test_state</span>
-<span class='fu'>get_num_items_in_test</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>cat.feedback.irt</span>(<span class='kw'>text</span> <span class='kw'>=</span> <span class='st'>"feedback_irt"</span>,
+  <span class='kw'>dict</span> <span class='kw'>=</span> <span class='kw pkg'>psychTestRCAT</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/psychTestRCAT/man/ptrcat_dict.html'>ptrcat_dict</a></span>, <span class='kw'>next_button</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>digits_irt_score</span> <span class='kw'>=</span> <span class='fl'>3L</span>, <span class='kw'>digits_irt_sem</span> <span class='kw'>=</span> <span class='fl'>3L</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>Object from which to extract the information.</p></td>
+      <th>text</th>
+      <td><p>(Character scalar)
+Text to display to the participant. This text will be treated as an
+internationalisation key for the dictionary contained in the <code>dict</code>
+argument; if the key is not present in the dictionary, the text
+will be displayed as is.</p></td>
+    </tr>
+    <tr>
+      <th>dict</th>
+      <td><p>Internationalisation dictionary (see <code><a href='https://rdrr.io/pkg/psychTestR/man/i18n_dict.html'>i18n_dict</a></code>).</p></td>
+    </tr>
+    <tr>
+      <th>next_button</th>
+      <td><p>(NULL or a character scalar or an object of class "shiny.tag")
+If NULL, no next button is shown
+(typically because the test has completed).
+Otherwise, a button to progress to the next page is created,
+displaying the content of this argument.</p></td>
+    </tr>
+    <tr>
+      <th>digits_irt_score</th>
+      <td><p>(Numeric scalar)
+Number of digits to which the IRT score should be rounded.</p></td>
+    </tr>
+    <tr>
+      <th>digits_irt_sem</th>
+      <td><p>(Numeric scalar)
+Number of digits to which the IRT standard error should be rounded.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>(Integer scalar)
-The total number of items in the test,
-including those that have yet to be administered.</p>
+    <p>A timeline segment suitable for inclusion in a psychTestR timeline
+directly after <code><a href='adapt_test.html'>adapt_test</a></code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

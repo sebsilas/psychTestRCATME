@@ -71,7 +71,7 @@ plotting the participant's results against the results of previous participants.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">psychTestRCAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -121,11 +121,13 @@ created with psychTestRCAT,
 plotting the participant's results against the results of previous participants.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cat.feedback.graph</span>(<span class='no'>test_label</span>, <span class='kw'>text_finish</span> <span class='kw'>=</span> <span class='st'>"You finished the test!"</span>,
-  <span class='kw'>text_score</span> <span class='kw'>=</span> <span class='st'>"Your final score:"</span>,
-  <span class='kw'>text_rank</span> <span class='kw'>=</span> <span class='st'>"Your rank compared to previous participants:"</span>,
-  <span class='kw'>x_axis</span> <span class='kw'>=</span> <span class='st'>"Score"</span>, <span class='kw'>y_axis</span> <span class='kw'>=</span> <span class='st'>"Count"</span>, <span class='kw'>next_button</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>3L</span>, <span class='kw'>explain_IRT</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>cat.feedback.graph</span>(<span class='no'>test_label</span>, <span class='kw'>text_finish</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>)
+  <span class='st'>"You finished the test!"</span> <span class='kw'>else</span> <span class='st'>"you_finished"</span>, <span class='kw'>text_score</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>)
+  <span class='st'>"Your final score:"</span> <span class='kw'>else</span> <span class='st'>"your_score"</span>, <span class='kw'>text_rank</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>)
+  <span class='st'>"Your rank compared to previous participants:"</span> <span class='kw'>else</span> <span class='st'>"your_rank"</span>,
+  <span class='kw'>x_axis</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>) <span class='st'>"Score"</span> <span class='kw'>else</span> <span class='st'>"score"</span>, <span class='kw'>y_axis</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>) <span class='st'>"Count"</span>
+  <span class='kw'>else</span> <span class='st'>"count"</span>, <span class='kw'>next_button</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>3L</span>, <span class='kw'>explain_IRT</span> <span class='kw'>=</span> !<span class='no'>i18n</span>,
+  <span class='kw'>i18n</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>dict</span> <span class='kw'>=</span> <span class='kw pkg'>psychTestRCAT</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/psychTestRCAT/man/ptrcat_dict.html'>ptrcat_dict</a></span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,11 +187,22 @@ If TRUE, the feedback page includes an academic explanation of
 item response theory.
 Currently only English language is supported.</p></td>
     </tr>
+    <tr>
+      <th>i18n</th>
+      <td><p>(Logical scalar)
+Whether internationalisation should be enabled.
+Defaults to <code>FALSE</code> to preserve back-compatibility.</p></td>
+    </tr>
+    <tr>
+      <th>dict</th>
+      <td><p>Internationalisation dictionary (see <code><a href='https://rdrr.io/pkg/psychTestR/man/i18n_dict.html'>i18n_dict</a></code>).</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A test element suitable for inclusion in a psychTestR timeline
+    <p>A test element (or, if <code>i18n</code> is TRUE, a timeline segment)
+suitable for inclusion in a psychTestR timeline
 directly after <code><a href='adapt_test.html'>adapt_test</a></code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
