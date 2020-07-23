@@ -464,8 +464,8 @@ check_inputs <- function(label, item_bank, show_item, opt) {
     is.data.frame(item_bank),
     is.function(show_item) || psychTestR::is.timeline(show_item)
   )
-  if (is.null(item_bank$answer)) "answer column not found in item bank"
-  if (is.list(item_bank$answer)) "answer column cannot be a list"
+  if (is.null(item_bank$answer)) stop("answer column not found in item bank")
+  if (is.list(item_bank$answer)) stop("answer column cannot be a list")
 
   for (col in c("discrimination", "difficulty", "guessing", "inattention")) {
     if (!col %in% names(item_bank)) {

@@ -1,3 +1,5 @@
+* Fixed missing error in `check_inputs`.
+
 # psychTestRCAT 1.6.0
 
 * Added internationalisation for feedback pages.
