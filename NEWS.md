@@ -1,3 +1,5 @@
+# psychTestRCAT 1.6.2
+
 # psychTestRCAT 1.6.1
 
 * Fixed missing error in `check_inputs`.
