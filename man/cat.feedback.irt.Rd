@@ -4,9 +4,13 @@
 \alias{cat.feedback.irt}
 \title{Feedback on IRT score}
 \usage{
-cat.feedback.irt(text = "feedback_irt",
-  dict = psychTestRCAT::ptrcat_dict, next_button = NULL,
-  digits_irt_score = 3L, digits_irt_sem = 3L)
+cat.feedback.irt(
+  text = "feedback_irt",
+  dict = psychTestRCAT::ptrcat_dict,
+  next_button = NULL,
+  digits_irt_score = 3L,
+  digits_irt_sem = 3L
+)
 }
 \arguments{
 \item{text}{(Character scalar)

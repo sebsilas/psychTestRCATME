@@ -4,12 +4,19 @@
 \alias{adapt_test_options}
 \title{Adaptive test options}
 \usage{
-adapt_test_options(next_item.criterion = "MFI",
-  next_item.estimator = "BM", next_item.prior_dist = "norm",
-  next_item.prior_par = c(0, 1), final_ability.estimator = "BM",
-  constrain_answers = FALSE, avoid_duplicates = NULL,
-  cb_control = NULL, cb_group = NULL, eligible_first_items = NULL,
-  notify_duration = 5)
+adapt_test_options(
+  next_item.criterion = "MFI",
+  next_item.estimator = "BM",
+  next_item.prior_dist = "norm",
+  next_item.prior_par = c(0, 1),
+  final_ability.estimator = "BM",
+  constrain_answers = FALSE,
+  avoid_duplicates = NULL,
+  cb_control = NULL,
+  cb_group = NULL,
+  eligible_first_items = NULL,
+  notify_duration = 5
+)
 }
 \arguments{
 \item{next_item.criterion}{(Character scalar, default = "MFI")

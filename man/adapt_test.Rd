@@ -4,9 +4,13 @@
 \alias{adapt_test}
 \title{Adaptive test}
 \usage{
-adapt_test(label, item_bank, show_item,
+adapt_test(
+  label,
+  item_bank,
+  show_item,
   stopping_rule = stopping_rule.num_items(n = NULL),
-  opt = adapt_test_options())
+  opt = adapt_test_options()
+)
 }
 \arguments{
 \item{label}{(Character scalar, e.g. 'MDT')

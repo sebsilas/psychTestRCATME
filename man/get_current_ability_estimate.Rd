@@ -4,8 +4,11 @@
 \alias{get_current_ability_estimate}
 \title{Current ability estimate}
 \usage{
-get_current_ability_estimate(test_state, opt,
-  estimator = opt$next_item.estimator)
+get_current_ability_estimate(
+  test_state,
+  opt,
+  estimator = opt$next_item.estimator
+)
 }
 \arguments{
 \item{test_state}{A \code{test_state} object as provided to

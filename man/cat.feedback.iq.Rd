@@ -4,9 +4,14 @@
 \alias{cat.feedback.iq}
 \title{Feedback on IQ score}
 \usage{
-cat.feedback.iq(test_label, text = "feedback_iq",
-  dict = psychTestRCAT::ptrcat_dict, next_button = NULL,
-  digits_iq = 0L, digits_percentile = 0L)
+cat.feedback.iq(
+  test_label,
+  text = "feedback_iq",
+  dict = psychTestRCAT::ptrcat_dict,
+  next_button = NULL,
+  digits_iq = 0L,
+  digits_percentile = 0L
+)
 }
 \arguments{
 \item{test_label}{(Character scalar)
