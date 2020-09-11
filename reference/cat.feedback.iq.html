@@ -76,7 +76,7 @@ with respect to the general population." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">psychTestRCAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.2</span>
       </span>
     </div>
 
@@ -128,9 +128,14 @@ The feedback also provides an interpration of the IQ score as a percentile
 with respect to the general population.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cat.feedback.iq</span>(<span class='no'>test_label</span>, <span class='kw'>text</span> <span class='kw'>=</span> <span class='st'>"feedback_iq"</span>,
-  <span class='kw'>dict</span> <span class='kw'>=</span> <span class='kw pkg'>psychTestRCAT</span><span class='kw ns'>::</span><span class='no'><a href='ptrcat_dict.html'>ptrcat_dict</a></span>, <span class='kw'>next_button</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>digits_iq</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>digits_percentile</span> <span class='kw'>=</span> <span class='fl'>0L</span>)</pre>
+    <pre class="usage"><span class='fu'>cat.feedback.iq</span>(
+  <span class='kw'>test_label</span>,
+  text = <span class='st'>"feedback_iq"</span>,
+  dict = <span class='kw'>psychTestRCAT</span>::<span class='kw'><a href='ptrcat_dict.html'>ptrcat_dict</a></span>,
+  next_button = <span class='kw'>NULL</span>,
+  digits_iq = <span class='fl'>0L</span>,
+  digits_percentile = <span class='fl'>0L</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -201,7 +206,7 @@ directly after <code><a href='adapt_test.html'>adapt_test</a></code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

@@ -73,7 +73,7 @@ the adapt_test function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">psychTestRCAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.2</span>
       </span>
     </div>
 
@@ -122,12 +122,19 @@ the adapt_test function." />
 the <code><a href='adapt_test.html'>adapt_test</a></code> function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>adapt_test_options</span>(<span class='kw'>next_item.criterion</span> <span class='kw'>=</span> <span class='st'>"MFI"</span>,
-  <span class='kw'>next_item.estimator</span> <span class='kw'>=</span> <span class='st'>"BM"</span>, <span class='kw'>next_item.prior_dist</span> <span class='kw'>=</span> <span class='st'>"norm"</span>,
-  <span class='kw'>next_item.prior_par</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>), <span class='kw'>final_ability.estimator</span> <span class='kw'>=</span> <span class='st'>"BM"</span>,
-  <span class='kw'>constrain_answers</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>avoid_duplicates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>cb_control</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cb_group</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>eligible_first_items</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>notify_duration</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
+    <pre class="usage"><span class='fu'>adapt_test_options</span>(
+  next_item.criterion = <span class='st'>"MFI"</span>,
+  next_item.estimator = <span class='st'>"BM"</span>,
+  next_item.prior_dist = <span class='st'>"norm"</span>,
+  next_item.prior_par = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>),
+  final_ability.estimator = <span class='st'>"BM"</span>,
+  constrain_answers = <span class='fl'>FALSE</span>,
+  avoid_duplicates = <span class='kw'>NULL</span>,
+  cb_control = <span class='kw'>NULL</span>,
+  cb_group = <span class='kw'>NULL</span>,
+  eligible_first_items = <span class='kw'>NULL</span>,
+  notify_duration = <span class='fl'>5</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -232,7 +239,7 @@ of <code><a href='adapt_test.html'>adapt_test</a></code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

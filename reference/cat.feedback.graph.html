@@ -74,7 +74,7 @@ plotting the participant's results against the results of previous participants.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">psychTestRCAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.2</span>
       </span>
     </div>
 
@@ -124,13 +124,20 @@ created with psychTestRCAT,
 plotting the participant's results against the results of previous participants.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cat.feedback.graph</span>(<span class='no'>test_label</span>, <span class='kw'>text_finish</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>)
-  <span class='st'>"You finished the test!"</span> <span class='kw'>else</span> <span class='st'>"you_finished"</span>, <span class='kw'>text_score</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>)
-  <span class='st'>"Your final score:"</span> <span class='kw'>else</span> <span class='st'>"your_score"</span>, <span class='kw'>text_rank</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>)
-  <span class='st'>"Your rank compared to previous participants:"</span> <span class='kw'>else</span> <span class='st'>"your_rank"</span>,
-  <span class='kw'>x_axis</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>) <span class='st'>"Score"</span> <span class='kw'>else</span> <span class='st'>"score"</span>, <span class='kw'>y_axis</span> <span class='kw'>=</span> <span class='kw'>if</span> (!<span class='no'>i18n</span>) <span class='st'>"Count"</span>
-  <span class='kw'>else</span> <span class='st'>"count"</span>, <span class='kw'>next_button</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>3L</span>, <span class='kw'>explain_IRT</span> <span class='kw'>=</span> !<span class='no'>i18n</span>,
-  <span class='kw'>i18n</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>dict</span> <span class='kw'>=</span> <span class='kw pkg'>psychTestRCAT</span><span class='kw ns'>::</span><span class='no'><a href='ptrcat_dict.html'>ptrcat_dict</a></span>)</pre>
+    <pre class="usage"><span class='fu'>cat.feedback.graph</span>(
+  <span class='kw'>test_label</span>,
+  text_finish = <span class='co'>if</span> (<span class='op'>!</span><span class='kw'>i18n</span>) <span class='st'>"You finished the test!"</span> <span class='co'>else</span> <span class='st'>"you_finished"</span>,
+  text_score = <span class='co'>if</span> (<span class='op'>!</span><span class='kw'>i18n</span>) <span class='st'>"Your final score:"</span> <span class='co'>else</span> <span class='st'>"your_score"</span>,
+  text_rank = <span class='co'>if</span> (<span class='op'>!</span><span class='kw'>i18n</span>) <span class='st'>"Your rank compared to previous participants:"</span> <span class='co'>else</span>
+    <span class='st'>"your_rank"</span>,
+  x_axis = <span class='co'>if</span> (<span class='op'>!</span><span class='kw'>i18n</span>) <span class='st'>"Score"</span> <span class='co'>else</span> <span class='st'>"score"</span>,
+  y_axis = <span class='co'>if</span> (<span class='op'>!</span><span class='kw'>i18n</span>) <span class='st'>"Count"</span> <span class='co'>else</span> <span class='st'>"count"</span>,
+  next_button = <span class='kw'>NULL</span>,
+  digits = <span class='fl'>3L</span>,
+  explain_IRT = <span class='op'>!</span><span class='kw'>i18n</span>,
+  i18n = <span class='fl'>FALSE</span>,
+  dict = <span class='kw'>psychTestRCAT</span>::<span class='kw'><a href='ptrcat_dict.html'>ptrcat_dict</a></span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -230,7 +237,7 @@ the feedback graph, once sufficiently many people have taken the test.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

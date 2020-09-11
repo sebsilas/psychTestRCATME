@@ -75,7 +75,7 @@ test results on a trial-by-trial level." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">psychTestRCAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.2</span>
       </span>
     </div>
 
@@ -126,8 +126,11 @@ for several participants; it allows the researcher to inspect
 test results on a trial-by-trial level.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compile_trial_by_trial_results</span>(<span class='kw'>in_dir</span> <span class='kw'>=</span> <span class='st'>"output/results"</span>, <span class='no'>label</span>,
-  <span class='kw'>combine</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>compile_trial_by_trial_results</span>(
+  in_dir = <span class='st'>"output/results"</span>,
+  <span class='kw'>label</span>,
+  combine = <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,6 +153,27 @@ or instead to return a list of data frames, one for each participant.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A data frame, or list of data frames, of trial-by-trial results.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Suppose that a participant completes 5 items in the test.
+They will have 5 rows in the table, corresponding to their 5 items.
+You can find the participant's rows by filtering by the "p_id" column.
+The column "num" indexes these rows: 1 corresponds to the first item
+they took, 2 corresponds to the second item, and so on.
+The ability scores are given in the "ability_" columns; they tell
+you the participant's estimated ability after having answered that
+particular item. To get the participant's final estimated ability score,
+look for the highest value of "num", in this case 5. Then look up the ability
+score within that row.</p>
+<p>There are different columns for the different ability
+estimation methods, make sure you are looking at the right one.
+The correct one to look at corresponds to the <code>final_ability.estimator</code>
+parameter in your adaptive test. We most commonly use weighted likelihood,
+i.e. "WL". This is stored in the column "ability_WL".
+If you are unsure that you are looking at the right column,
+you can compare the results to the CSV results that you can download
+from the psychTestR admin interface, which provide
+solely the participant's final ability score.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -166,7 +190,7 @@ or instead to return a list of data frames, one for each participant.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

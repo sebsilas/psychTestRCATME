@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">psychTestRCAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.2</span>
       </span>
     </div>
 
@@ -120,9 +120,13 @@
     <p>Defines an adaptive test for use within psychTestR.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>adapt_test</span>(<span class='no'>label</span>, <span class='no'>item_bank</span>, <span class='no'>show_item</span>,
-  <span class='kw'>stopping_rule</span> <span class='kw'>=</span> <span class='fu'><a href='stopping_rule.num_items.html'>stopping_rule.num_items</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='kw'>NULL</span>),
-  <span class='kw'>opt</span> <span class='kw'>=</span> <span class='fu'><a href='adapt_test_options.html'>adapt_test_options</a></span>())</pre>
+    <pre class="usage"><span class='fu'>adapt_test</span>(
+  <span class='kw'>label</span>,
+  <span class='kw'>item_bank</span>,
+  <span class='kw'>show_item</span>,
+  stopping_rule = <span class='fu'><a href='stopping_rule.num_items.html'>stopping_rule.num_items</a></span>(n = <span class='kw'>NULL</span>),
+  opt = <span class='fu'><a href='adapt_test_options.html'>adapt_test_options</a></span>()
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,7 +163,7 @@ correctly.</p></li>
 <p>The data frame must also contain a column called <code>answer</code>,
 defining the correct answer for each item.
 These answers will be checked for equality with
-the answer output from <code>show_item</code> using <code>==</code>,
+the answer output from <code>show_item</code> using <code><a href='https://rdrr.io/r/base/Comparison.html'>==</a></code>,
 which coerces to a shared class
 (e.g. numeric answers can be coerced to character answers).
 List-columns are not permitted.</p>
@@ -282,7 +286,7 @@ the <code>catR</code> package.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

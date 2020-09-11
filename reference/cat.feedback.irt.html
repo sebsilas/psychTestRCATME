@@ -76,7 +76,7 @@ the final scores manually." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">psychTestRCAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.2</span>
       </span>
     </div>
 
@@ -128,9 +128,13 @@ conducting in-lab studies, because it means they can write down
 the final scores manually.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cat.feedback.irt</span>(<span class='kw'>text</span> <span class='kw'>=</span> <span class='st'>"feedback_irt"</span>,
-  <span class='kw'>dict</span> <span class='kw'>=</span> <span class='kw pkg'>psychTestRCAT</span><span class='kw ns'>::</span><span class='no'><a href='ptrcat_dict.html'>ptrcat_dict</a></span>, <span class='kw'>next_button</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>digits_irt_score</span> <span class='kw'>=</span> <span class='fl'>3L</span>, <span class='kw'>digits_irt_sem</span> <span class='kw'>=</span> <span class='fl'>3L</span>)</pre>
+    <pre class="usage"><span class='fu'>cat.feedback.irt</span>(
+  text = <span class='st'>"feedback_irt"</span>,
+  dict = <span class='kw'>psychTestRCAT</span>::<span class='kw'><a href='ptrcat_dict.html'>ptrcat_dict</a></span>,
+  next_button = <span class='kw'>NULL</span>,
+  digits_irt_score = <span class='fl'>3L</span>,
+  digits_irt_sem = <span class='fl'>3L</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -187,7 +191,7 @@ directly after <code><a href='adapt_test.html'>adapt_test</a></code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>
