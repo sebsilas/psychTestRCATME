@@ -129,6 +129,8 @@ get_current_ability_estimate_mixed_effects <- function(test_state,
 
 predict_based_on_mixed_effects_model <- function(model, new_data) {
 
+  cat(file=stderr(), "predict_based_on_mixed_effects_model", "\n")
+
   sigma <- lme4::VarCorr(model) %>% # get model SD
     as.data.frame() %>%
     dplyr::filter(grp == "p_id") %>%
@@ -178,8 +180,8 @@ compute_new_ranef <- function(N_empirical, y, N_coef, N_intercept, min, max, sig
                    upper = max)
 
   ability <- as.vector(mle_par$par)
-  print('ability is: ')
-  print(ability)
+  cat('ability is: ')
+  cat(ability)
   ability
 }
 
@@ -220,8 +222,8 @@ bayes_modal_estimation_arrhythmic_model <- function(par,
     tonalness$coef * tonalness$empirical -
     log_freq$coef * log_freq$empirical
 
-  -sum(dnorm(R, mean = 0, sd = sigma, log = TRUE) + # likelihood
-         dnorm(alpha, mean = 0, sd = sigma, log = TRUE)) # prior
+  -sum(stats::dnorm(R, mean = 0, sd = sigma, log = TRUE) + # likelihood
+         stats::dnorm(alpha, mean = 0, sd = sigma, log = TRUE)) # prior
 
 }
 
@@ -238,7 +240,7 @@ compute_new_ranef_full_model <- function(y,
                                          sigma) {
 
 
-  mle_par <- optim(fn = bayes_modal_estimation_arrhythmic_model,
+  mle_par <- stats::optim(fn = bayes_modal_estimation_arrhythmic_model,
                    par = c(alpha = 0), # start with the mean of 0
                    N = N,
                    step.cont.loc.var = step.cont.loc.var,
@@ -256,5 +258,5 @@ compute_new_ranef_full_model <- function(y,
 
 
 get_fixed_effect_param <- function(param, model) {
-  as.vector(fixef(model)[param])
+  as.vector(lme4::fixef(model)[param])
 }
