@@ -590,6 +590,8 @@ are_duplicates_avoided <- function(test_state, item_bank, opt) {
 
 select_next_item <- function(item_bank, opt) {
 
+  print('select_next_item')
+
   model <- opt$mixed_effects_model
 
   sigma <- lme4::VarCorr(model) %>% # get model SD
@@ -606,8 +608,14 @@ select_next_item <- function(item_bank, opt) {
   psychTestR::code_block(
     function(state, ...) {
       test_state <- psychTestR::get_local("test_state", state)
+      print('papapa')
+      print(test_state)
       ability_estimate <- get_current_ability_estimate_mixed_effects(
         test_state, opt = opt, estimator = opt$next_item.estimator)
+      print('dada ability_estimate')
+      print(ability_estimate)
+      print('after ability')
+
       allowed_items <- get_allowed_items(test_state, item_bank, opt)
       next_item <- tryCatch(catR::nextItem(
         itemBank = as.matrix(item_bank[, c("discrimination", "difficulty",
@@ -648,6 +656,7 @@ select_next_item <- function(item_bank, opt) {
 administer_next_item <- function(item_bank, show_item) {
   c(
     psychTestR::code_block(fun = function(state, ...) {
+      print('administer_next_item')
       test_state <- psychTestR::get_local("test_state", state)
       item_id <- test_state$next_item$item
       stopifnot(is.scalar.numeric(item_id),

@@ -4,6 +4,9 @@ save_result_mixed_effects <- function(item_bank, opt) {
     function(state, ...) {
       test_state <- psychTestR::get_local("test_state", state)
 
+      print('save_result_mixed_effects test_state')
+      print(test_state)
+
       previous_ability_estimate <- get_current_ability_estimate_mixed_effects(
         test_state = test_state, opt = opt)
 
@@ -11,7 +14,12 @@ save_result_mixed_effects <- function(item_bank, opt) {
       item_id <- item_info$item
       answer <- psychTestR::answer(state)
 
-      score <- answer[[opt$dv_name]]
+      if(!is.null(answer$error)) {
+          shiny::showNotification("Sorry, we didn't get capture a response. Predicting mean.", duration = opt$notify_duration)
+          score <- 0
+      } else {
+          score <- answer[[opt$dv_name]]
+      }
 
       print('opti3...')
       print(score)
@@ -28,6 +36,7 @@ save_result_mixed_effects <- function(item_bank, opt) {
         score = score
       )
 
+
       fixed_effects <- item_bank %>% dplyr::slice(item_id) %>%
         dplyr::select(opt$fixed_effects)
 
@@ -40,8 +49,14 @@ save_result_mixed_effects <- function(item_bank, opt) {
       test_state$results.by_item <- plyr::rbind.fill(test_state$results.by_item, new_row)
 
       tmp_item_params <- test_state$results.by_item[, opt$fixed_effects, drop = FALSE]
+
+      print('test_state$results.by_item$score')
+      print(test_state$results.by_item$score)
+
       tmp_scores <- test_state$results.by_item$score
 
+      print('tmp_scores')
+      print(tmp_scores)
 
       new_data <- cbind(tmp_item_params, tmp_scores) %>%
         dplyr::mutate(p_id = psychTestR::p_id(state))
@@ -109,6 +124,9 @@ get_current_ability_estimate_mixed_effects <- function(test_state,
                                          opt,
                                          estimator = opt$next_item.estimator,
                                          mixed_effects_model = opt$mixed_effects_model) {
+
+  print('get_current_ability_estimate_mixed_effects')
+  print(test_state)
 
   df <- test_state$results.by_item
 
