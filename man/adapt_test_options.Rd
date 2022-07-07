@@ -19,7 +19,8 @@ adapt_test_options(
   mixed_effects_model = NULL,
   continuous_response = FALSE,
   dv_name = " ",
-  fixed_effects = c("fixed_effect1", "fixed_effect2")
+  fixed_effects = c("fixed_effect1", "fixed_effect2"),
+  demo = FALSE
 )
 }
 \arguments{
@@ -85,7 +86,10 @@ This is only relevant when the test is taken in admin or demo mode.}
 
 \item{dv_name}{Name of dependent variable.}
 
-\item{fixed_effects}{Character vector of names of fixed effects.}
+\item{fixed_effects}{Character vector of names of fixed effects.
+
+#' @param demo
+Logical.}
 }
 \value{
 A list to be passed to the \code{opt} argument

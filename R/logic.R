@@ -142,7 +142,7 @@ adapt_test <- function(label,
       logic = c(
         select_next_item(item_bank, opt),
         administer_next_item(item_bank, show_item),
-        if(opt$continuous_response) save_result_mixed_effects(item_bank, opt) else save_result(item_bank, opt)
+        if(opt$continuous_response) save_result_mixed_effects(item_bank, opt) else save_result_mixed_effects(item_bank, opt)
       )),
     finalise(opt))
 }
@@ -226,12 +226,13 @@ adapt_test <- function(label,
 #' Is response continuous?
 #'
 #' @param dv_name
-#'
 #' Name of dependent variable.
 #'
 #' @param fixed_effects
-#'
 #' Character vector of names of fixed effects.
+#'
+#' #' @param demo
+#' Logical.
 #'
 #' @return A list to be passed to the \code{opt} argument
 #' of \code{\link{adapt_test}}.
@@ -251,7 +252,8 @@ adapt_test_options <- function(next_item.criterion = "MFI",
                                mixed_effects_model = NULL,
                                continuous_response = FALSE,
                                dv_name = " ",
-                               fixed_effects = c("fixed_effect1", "fixed_effect2")
+                               fixed_effects = c("fixed_effect1", "fixed_effect2"),
+                               demo = FALSE
 ) {
   stopifnot(
     is.scalar.character(next_item.criterion),
@@ -271,7 +273,8 @@ adapt_test_options <- function(next_item.criterion = "MFI",
                function(x) class(x) == "lmerModLmerTest"),
     is.logical(continuous_response),
     is.scalar.character(dv_name),
-    is.character(fixed_effects)
+    is.character(fixed_effects),
+    is.logical(demo)
   )
   local(if (!(is.null(cb_control) && is.null(cb_group))) {
       cb_test <- catR::test.cbList(cb_control, cb_group)
@@ -594,7 +597,7 @@ select_next_item <- function(item_bank, opt) {
     dplyr::filter(grp == "p_id") %>%
     dplyr::pull(sdcor)
 
-  ability_preds <- ranef(model)$p_id[, '(Intercept)']
+  ability_preds <- lme4::ranef(model)$p_id[, '(Intercept)']
 
   min_ability <- min(ability_preds)
   max_ability <- max(ability_preds)
@@ -631,7 +634,7 @@ select_next_item <- function(item_bank, opt) {
           duration = opt$notify_duration)
         test_state$terminate_test <- TRUE
         psychTestR::skip_n_pages(state, n = 2L) # this is dangerous
-      } else if (psychTestR::demo(state)) {
+      } else if (opt$demo) {
         msg <- shiny::p("Difficulty: ",
                         shiny::strong(format(next_item$par[2],
                                              digits = 3,
@@ -751,14 +754,18 @@ save_result <- function(item_bank, opt) {
 }
 
 finalise <- function(opt) {
+
   psychTestR::code_block(function(state, ...) {
+
     test_state <- psychTestR::get_local("test_state", state)
     df <- test_state$results.by_item
     n <- nrow(df)
-    final_ability <- df[n, paste0("ability_", opt$final_ability.estimator)]
+    final_ability <- df[n, "ability_ME"]
+
     attr(final_ability, "metadata") <- list(results = df, options = opt)
+
     final_ability_sem <-
-      df[n, paste0("ability_", opt$final_ability.estimator, "_sem")]
+      df[n, "ability_ME_sem"]
     psychTestR::answer(state) <- list(
       ability = final_ability, ability_sem = final_ability_sem)
     psychTestR::save_result(

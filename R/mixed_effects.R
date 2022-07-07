@@ -61,6 +61,8 @@ save_result_mixed_effects <- function(item_bank, opt) {
       test_state$results.by_item[n, "ability_ME"] <- tmp_ability
       test_state$results.by_item[n, "ability_ME_sem"] <- tmp_ability_sem
 
+      print('here noww...asd')
+
 
       if (psychTestR::demo(state)) {
         new_ability_estimate <- get_current_ability_estimate_mixed_effects(test_state, opt)
@@ -128,8 +130,6 @@ get_current_ability_estimate_mixed_effects <- function(test_state,
 
 
 predict_based_on_mixed_effects_model <- function(model, new_data) {
-
-  cat(file=stderr(), "predict_based_on_mixed_effects_model", "\n")
 
   sigma <- lme4::VarCorr(model) %>% # get model SD
     as.data.frame() %>%
