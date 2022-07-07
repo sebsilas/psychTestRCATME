@@ -1,4 +1,4 @@
-#' psychTestRCAT
+#' psychTestRCAT_ME
 #'
 #' This package supports the creation of adaptive tests
 #' within the psychTestR computerised testing framework.

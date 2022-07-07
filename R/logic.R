@@ -142,7 +142,7 @@ adapt_test <- function(label,
       logic = c(
         select_next_item(item_bank, opt),
         administer_next_item(item_bank, show_item),
-        save_result(item_bank, opt)
+        if(opt$continuous_response) save_result_mixed_effects(item_bank, opt) else save_result(item_bank, opt)
       )),
     finalise(opt))
 }
@@ -219,6 +219,20 @@ adapt_test <- function(label,
 #' persist on screen, in seconds.
 #' This is only relevant when the test is taken in admin or demo mode.
 #'
+#' @param mixed_effects_model
+#' A mixed effects model of class lmerModLmerTest.
+#'
+#' @param continuous_response
+#' Is response continuous?
+#'
+#' @param dv_name
+#'
+#' Name of dependent variable.
+#'
+#' @param fixed_effects
+#'
+#' Character vector of names of fixed effects.
+#'
 #' @return A list to be passed to the \code{opt} argument
 #' of \code{\link{adapt_test}}.
 #'
@@ -233,7 +247,11 @@ adapt_test_options <- function(next_item.criterion = "MFI",
                                cb_control = NULL,
                                cb_group = NULL,
                                eligible_first_items = NULL,
-                               notify_duration = 5
+                               notify_duration = 5,
+                               mixed_effects_model = NULL,
+                               continuous_response = FALSE,
+                               dv_name = " ",
+                               fixed_effects = c("fixed_effect1", "fixed_effect2")
 ) {
   stopifnot(
     is.scalar.character(next_item.criterion),
@@ -248,7 +266,12 @@ adapt_test_options <- function(next_item.criterion = "MFI",
     is.null.or(eligible_first_items,
                function(x) is.numeric(x) && !anyDuplicated(x)),
     is.null.or(notify_duration, is.scalar.numeric),
-    is.scalar.logical(constrain_answers)
+    is.scalar.logical(constrain_answers),
+    is.null.or(mixed_effects_model,
+               function(x) class(x) == "lmerModLmerTest"),
+    is.logical(continuous_response),
+    is.scalar.character(dv_name),
+    is.character(fixed_effects)
   )
   local(if (!(is.null(cb_control) && is.null(cb_group))) {
       cb_test <- catR::test.cbList(cb_control, cb_group)
@@ -563,10 +586,24 @@ are_duplicates_avoided <- function(test_state, item_bank, opt) {
 }
 
 select_next_item <- function(item_bank, opt) {
+
+  model <- opt$mixed_effects_model
+
+  sigma <- lme4::VarCorr(model) %>% # get model SD
+    as.data.frame() %>%
+    dplyr::filter(grp == "p_id") %>%
+    dplyr::pull(sdcor)
+
+  ability_preds <- ranef(model)$p_id[, '(Intercept)']
+
+  min_ability <- min(ability_preds)
+  max_ability <- max(ability_preds)
+
+
   psychTestR::code_block(
     function(state, ...) {
       test_state <- psychTestR::get_local("test_state", state)
-      ability_estimate <- get_current_ability_estimate(
+      ability_estimate <- get_current_ability_estimate_mixed_effects(
         test_state, opt = opt, estimator = opt$next_item.estimator)
       allowed_items <- get_allowed_items(test_state, item_bank, opt)
       next_item <- tryCatch(catR::nextItem(
@@ -580,7 +617,9 @@ select_next_item <- function(item_bank, opt) {
         nAvailable = as.numeric(allowed_items),
         maxItems = Inf,
         cbControl = opt$cb_control,
-        cbGroup = opt$cb_group
+        cbGroup = opt$cb_group,
+        priorPar = c(0, sigma),
+        range = c(min_ability, max_ability)
       ), error = function(e) NULL)
 
       test_state$next_item <- next_item
@@ -641,7 +680,7 @@ save_result <- function(item_bank, opt) {
     function(state, ...) {
       test_state <- psychTestR::get_local("test_state", state)
 
-      previous_ability_estimate <- get_current_ability_estimate(
+      previous_ability_estimate <- get_current_ability_estimate_mixed_effects(
         test_state = test_state, opt = opt)
 
       item_info <- test_state$next_item
@@ -689,7 +728,7 @@ save_result <- function(item_bank, opt) {
       }
 
       if (psychTestR::demo(state)) {
-        new_ability_estimate <- get_current_ability_estimate(test_state, opt)
+        new_ability_estimate <- get_current_ability_estimate_mixed_effects(test_state, opt)
         ability_change <- new_ability_estimate - previous_ability_estimate
         msg <- shiny::div(
           shiny::p(shiny::strong(if (score) "Correct" else "Incorrect"),

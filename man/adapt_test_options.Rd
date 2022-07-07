@@ -15,7 +15,11 @@ adapt_test_options(
   cb_control = NULL,
   cb_group = NULL,
   eligible_first_items = NULL,
-  notify_duration = 5
+  notify_duration = 5,
+  mixed_effects_model = NULL,
+  continuous_response = FALSE,
+  dv_name = " ",
+  fixed_effects = c("fixed_effect1", "fixed_effect2")
 )
 }
 \arguments{
@@ -74,6 +78,14 @@ first item will be drawn from rows 2, 3, 4 of the item bank).}
 Defines the length of time for which item-by-item feedback messages
 persist on screen, in seconds.
 This is only relevant when the test is taken in admin or demo mode.}
+
+\item{mixed_effects_model}{A mixed effects model of class lmerModLmerTest.}
+
+\item{continuous_response}{Is response continuous?}
+
+\item{dv_name}{Name of dependent variable.}
+
+\item{fixed_effects}{Character vector of names of fixed effects.}
 }
 \value{
 A list to be passed to the \code{opt} argument
