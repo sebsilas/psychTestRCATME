@@ -136,7 +136,7 @@ Defines an adaptive test for use within psychTestR.
 \details{
 This is the top-level function of the psychTestRCAT package.
 It defines adaptive tests within the framework of item response theory.
-An aadptive test is one that tailors item selection to the
+An adptive test is one that tailors item selection to the
 current test-taker on the basis of their performance during the test.
 }
 \note{

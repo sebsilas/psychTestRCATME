@@ -20,7 +20,8 @@ adapt_test_options(
   continuous_response = FALSE,
   dv_name = " ",
   fixed_effects = c("fixed_effect1", "fixed_effect2"),
-  demo = FALSE
+  demo = FALSE,
+  predict_based_on_mixed_effects_model_function = NULL
 )
 }
 \arguments{
@@ -89,7 +90,10 @@ This is only relevant when the test is taken in admin or demo mode.}
 \item{fixed_effects}{Character vector of names of fixed effects.
 
 #' @param demo
-Logical.}
+Logical.
+
+#' @param predict_based_on_mixed_effects_model_function
+A function to to predict from the mixed effects model.}
 }
 \value{
 A list to be passed to the \code{opt} argument

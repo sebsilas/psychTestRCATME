@@ -4,7 +4,7 @@
 #'
 #' This is the top-level function of the psychTestRCAT package.
 #' It defines adaptive tests within the framework of item response theory.
-#' An aadptive test is one that tailors item selection to the
+#' An adptive test is one that tailors item selection to the
 #' current test-taker on the basis of their performance during the test.
 #' @param label (Character scalar, e.g. 'MDT')
 #' A label for the test when saving the participant's results.
@@ -234,6 +234,9 @@ adapt_test <- function(label,
 #' #' @param demo
 #' Logical.
 #'
+#' #' @param predict_based_on_mixed_effects_model_function
+#' A function to to predict from the mixed effects model.
+#'
 #' @return A list to be passed to the \code{opt} argument
 #' of \code{\link{adapt_test}}.
 #'
@@ -253,8 +256,8 @@ adapt_test_options <- function(next_item.criterion = "MFI",
                                continuous_response = FALSE,
                                dv_name = " ",
                                fixed_effects = c("fixed_effect1", "fixed_effect2"),
-                               demo = FALSE
-) {
+                               demo = FALSE,
+                               predict_based_on_mixed_effects_model_function = NULL) {
   stopifnot(
     is.scalar.character(next_item.criterion),
     is.scalar.character(next_item.estimator),
@@ -274,7 +277,8 @@ adapt_test_options <- function(next_item.criterion = "MFI",
     is.logical(continuous_response),
     is.scalar.character(dv_name),
     is.character(fixed_effects),
-    is.logical(demo)
+    is.logical(demo),
+    is.null.or(predict_based_on_mixed_effects_model_function, is.function)
   )
   local(if (!(is.null(cb_control) && is.null(cb_group))) {
       cb_test <- catR::test.cbList(cb_control, cb_group)
@@ -479,7 +483,7 @@ save_result_mixed_effects <- function(item_bank, opt) {
       test_state$num_items_administered <- n
 
 
-      tmp_ability <- predict_based_on_mixed_effects_model(opt$mixed_effects_model, new_data)
+      tmp_ability <- opt$predict_based_on_mixed_effects_model_function(opt$mixed_effects_model, new_data)
       tmp_ability_sem <- NA
 
       test_state$results.by_item[n, "ability_ME"] <- tmp_ability
@@ -551,158 +555,6 @@ get_current_ability_estimate_mixed_effects <- function(test_state,
 }
 
 
-
-#' Predict based on a mixed-effects model
-#'
-#' @param model
-#' @param new_data
-#'
-#' @return
-#' @export
-#'
-#' @examples
-predict_based_on_mixed_effects_model <- function(model, new_data) {
-
-  sigma <- lme4::VarCorr(model) %>% # get model SD
-    as.data.frame() %>%
-    dplyr::filter(grp == "p_id") %>%
-    dplyr::pull(sdcor)
-
-  new_data <- new_data %>%
-    dplyr::filter(!is.na(opti3))
-
-  ability_length_preds <- lme4::ranef(model)$p_id[, '(Intercept)']
-
-  min_ability <- min(ability_length_preds)
-  max_ability <- max(ability_length_preds)
-
-
-  compute_new_ranef_full_model(new_data$tmp_scores,
-                               fixed_effect_intercept = get_fixed_effect_param('(Intercept)', model),
-                               N = list(empirical = new_data$N,
-                                        coef = get_fixed_effect_param('N', model)),
-                               step.cont.loc.var = list(
-                                 empirical = new_data$step.cont.loc.var,
-                                 coef = get_fixed_effect_param('step.cont.loc.var', model)),
-                               tonalness = list(empirical = new_data$tonalness,
-                                                coef = get_fixed_effect_param('tonalness', model)),
-                               log_freq = list(empirical = new_data$log_freq,
-                                               coef = get_fixed_effect_param('log_freq', model)),
-                               min = min_ability,
-                               max = max_ability,
-                               sigma = sigma)
-
-}
-
-
-
-
-compute_new_ranef <- function(N_empirical, y, N_coef, N_intercept, min, max, sigma) {
-
-
-  mle_par <- stats::optim(fn = bayes_modal_estimation_N_model,
-                          par = c(alpha = 0), # start with the mean of 0
-                          N_empirical = N_empirical,
-                          N_coef = N_coef,
-                          N_intercept = N_intercept,
-                          y = y,
-                          sigma = sigma,
-                          method = "Brent",
-                          lower = min,
-                          upper = max)
-
-  ability <- as.vector(mle_par$par)
-  cat('ability is: ')
-  cat(ability)
-  ability
-}
-
-bayes_modal_estimation_N_model <- function(par, N_empirical, y, N_coef, N_intercept, sigma) {
-
-  alpha <- par[1] # we only need to optimise for the participant intercept
-
-  R <- y - alpha - N_intercept - N_coef * N_empirical
-
-  -sum(stats::dnorm(R, mean = 0, sd = sigma, log = TRUE) + # likelihood
-         stats::dnorm(alpha, mean = 0, sd = sigma, log = TRUE)) # prior
-
-}
-
-
-
-
-bayes_modal_estimation_arrhythmic_model <- function(par,
-                                                    y,
-                                                    fixed_effect_intercept,
-                                                    N = list(empirical = NA,
-                                                             coef = NA),
-                                                    step.cont.loc.var = list(empirical = NA,
-                                                                             coef = NA),
-                                                    tonalness = list(empirical = NA,
-                                                                     coef = NA),
-                                                    log_freq = list(empirical = NA,
-                                                                    coef = NA),
-                                                    sigma) {
-
-  #  N + step.cont.loc.var + tonalness + log_freq
-
-  alpha <- par[1] # we only need to optimise for the participant intercept
-
-  R <- y - alpha - fixed_effect_intercept -
-    N$coef * N$empirical -
-    step.cont.loc.var$coef * step.cont.loc.var$empirical -
-    tonalness$coef * tonalness$empirical -
-    log_freq$coef * log_freq$empirical
-
-  -sum(stats::dnorm(R, mean = 0, sd = sigma, log = TRUE) + # likelihood
-         stats::dnorm(alpha, mean = 0, sd = sigma, log = TRUE)) # prior
-
-}
-
-
-
-#' Compute a participant random effect intercept, based on their item scores
-#'
-#' @param y
-#' @param N
-#' @param step.cont.loc.var
-#' @param tonalness
-#' @param log_freq
-#' @param min
-#' @param max
-#' @param fixed_effect_intercept
-#' @param sigma
-#'
-#' @return
-#' @export
-#'
-#' @examples
-compute_new_ranef_full_model <- function(y,
-                                         N,
-                                         step.cont.loc.var,
-                                         tonalness,
-                                         log_freq,
-                                         min,
-                                         max,
-                                         fixed_effect_intercept,
-                                         sigma) {
-
-
-  mle_par <- stats::optim(fn = bayes_modal_estimation_arrhythmic_model,
-                          par = c(alpha = 0), # start with the mean of 0
-                          N = N,
-                          step.cont.loc.var = step.cont.loc.var,
-                          tonalness = tonalness,
-                          log_freq = log_freq,
-                          y = y,
-                          fixed_effect_intercept = fixed_effect_intercept,
-                          sigma = sigma,
-                          method = "Brent",
-                          lower = min,
-                          upper = max)
-
-  as.vector(mle_par$par)
-}
 
 
 get_fixed_effect_param <- function(param, model) {
