@@ -26,6 +26,6 @@ Imports:
     purrr
 RoxygenNote: 7.1.1
 Byte-Compile: yes
-Remotes: pmcharrison/psychTestR
+Remotes: sebsilas/psychTestR
 URL: https://github.com/pmcharrison/psychTestRCAT
 BugReports: https://github.com/pmcharrison/psychTestRCAT/issues
