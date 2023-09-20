@@ -18,7 +18,7 @@ predict_based_on_mixed_effects_arrhythmic_model <- function(model, new_data) {
     dplyr::pull(sdcor)
 
   new_data <- new_data %>%
-    dplyr::filter(!is.na(opti3))
+    dplyr::filter(!is.na(tmp_scores))
 
   ability_length_preds <- lme4::ranef(model)$p_id[, '(Intercept)']
 

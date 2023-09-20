@@ -441,14 +441,14 @@ save_result_mixed_effects <- function(item_bank, opt) {
       item_id <- item_info$item
       answer <- psychTestR::answer(state)
 
-      if(!is.null(answer$error)) {
+      if(answer$error) {
         shiny::showNotification("Sorry, we didn't get capture a response. Predicting mean.", duration = opt$notify_duration)
         score <- 0
       } else {
         score <- answer[[opt$dv_name]]
       }
 
-      # only take length one answers
+      # Only take length one answers
       answer  <- answer[purrr::map_lgl(answer, function(x) length(x) == 1)] %>%
         tibble::as_tibble()
 
