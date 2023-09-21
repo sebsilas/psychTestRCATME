@@ -8,8 +8,7 @@ cat.feedback.graph(
   test_label,
   text_finish = if (!i18n) "You finished the test!" else "you_finished",
   text_score = if (!i18n) "Your final score:" else "your_score",
-  text_rank = if (!i18n) "Your rank compared to previous participants:" else
-    "your_rank",
+  text_rank = if (!i18n) "Your rank compared to previous participants:" else "your_rank",
   x_axis = if (!i18n) "Score" else "score",
   y_axis = if (!i18n) "Count" else "count",
   next_button = NULL,

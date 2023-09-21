@@ -9,9 +9,6 @@ predict_based_on_mixed_effects_rhythmic_model(model, new_data)
 \arguments{
 \item{new_data}{}
 }
-\value{
-
-}
 \description{
 Predict based on rhythmic mixed-effects model
 }

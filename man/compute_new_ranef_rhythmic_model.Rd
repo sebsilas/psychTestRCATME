@@ -20,9 +20,6 @@ compute_new_ranef_rhythmic_model(
 \arguments{
 \item{sigma}{}
 }
-\value{
-
-}
 \description{
 Compute a participant random effect intercept, based on the scores they got on different items (with different difficulty features)
 }

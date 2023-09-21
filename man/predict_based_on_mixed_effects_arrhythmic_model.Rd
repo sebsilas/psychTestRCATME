@@ -9,9 +9,6 @@ predict_based_on_mixed_effects_arrhythmic_model(model, new_data)
 \arguments{
 \item{new_data}{}
 }
-\value{
-
-}
 \description{
 Predict based on arrhythmic mixed-effects model
 }

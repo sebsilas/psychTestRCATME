@@ -24,7 +24,7 @@ Imports:
     lme4,
     lmerTest,
     purrr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Byte-Compile: yes
 Remotes: pmcharrison/psychTestR
 URL: https://github.com/pmcharrison/psychTestRCAT
